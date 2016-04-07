@@ -6,5 +6,6 @@ $entryPoints = array(
     'filterRecords' => 'FilterRecords',
     'accessToken' => 'Oauth2Token',
     'refreshToken' => 'RefreshToken',
-    'createRecord' => 'CreateRecord'
+    'createRecord' => 'CreateRecord',
+    'updateRecord' => 'UpdateRecord'
 );
