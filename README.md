@@ -24,9 +24,11 @@ See examples directory for a few examples of manipulating data via the API.
 ##Current API Methods##
 - \<module\> - POST
  - Create Module Records
-- \<module\>/filter - GET
- - List Module Records
+- \<module\>/filter - POST
+ - List Module Records, and Filter Records using the Filter API
 - \<module\>/:record - GET
  - Get Module Record
+- \<module\>/:record - PUT
+ - Update Module Record
 - oauth2/token - POST
  - Login, and Refresh Token
