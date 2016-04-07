@@ -50,9 +50,11 @@ abstract class AbstractRequest implements RequestInterface{
         $token = $name.": ".$value;
         $this->headers[] = $token;
     }
-    public function setHeaders(array $array) {
-        foreach($array as $key => $value){
-            $this->addHeader($key,$value);
+    public function setHeaders(array $array = array()) {
+        if (count($array)>0) {
+            foreach ($array as $key => $value) {
+                $this->addHeader($key, $value);
+            }
         }
         $this->setOption(CURLOPT_HTTPHEADER, $this->headers);
         return $this;
@@ -76,7 +78,7 @@ abstract class AbstractRequest implements RequestInterface{
         curl_setopt($this->CurlRequest, $option, $value);
     }
     public function send() {
-        print($this->body);
+        $this->setHeaders();
         $this->CurlResponse = curl_exec($this->CurlRequest);
         return $this;
     }

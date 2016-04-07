@@ -2,9 +2,9 @@
 
 namespace SugarAPI\SDK;
 
-use SugarAPI\Exception\InitializationFailure;
-use SugarAPI\Exception\InvalidEntryPoint;
-use SugarAPI\Exception\AuthenticationError;
+use SugarAPI\SDK\Exception\InitializationFailure;
+use SugarAPI\SDK\Exception\InvalidEntryPoint;
+use SugarAPI\SDK\Exception\AuthenticationError;
 
 class SugarAPI {
 
@@ -91,12 +91,11 @@ class SugarAPI {
             throw new AuthenticationError('missing_user_pass');
         }
         $EP = $this->accessToken();
-        echo "Test";
         $response = $EP->data($this->authOptions)->execute()->getResponse();
         if ($response->getStatus()=='200'){
             $this->authToken = $response->getBody();
         }else{
-            throw new AuthenticationError('failed_auth',$response->getBody());
+            throw new AuthenticationError('failed_auth');
         }
     }
     public function setInstance($instance){

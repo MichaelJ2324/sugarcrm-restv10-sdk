@@ -8,7 +8,7 @@ interface RequestInterface {
     public function getBody();
 
     public function addHeader($name,$value);
-    public function setHeaders(array $array);
+    public function setHeaders(array $array = array());
     public function getHeaders();
 
     public function getCurlObject();

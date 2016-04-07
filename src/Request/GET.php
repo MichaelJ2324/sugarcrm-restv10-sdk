@@ -9,8 +9,11 @@ class GET extends AbstractRequest{
     protected static $_TYPE = 'PUT';
 
     public function setBody($body){
-        $this->body = $body;
-        $this->setURL($this->url."?".http_build_query($body));
+        $this->body = http_build_query($body);
+    }
+    public function send(){
+        $this->setURL($this->url."?".$this->body);
+        return parent::send();
     }
 
 }

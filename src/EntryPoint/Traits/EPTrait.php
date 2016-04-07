@@ -2,14 +2,14 @@
 
 namespace SugarAPI\SDK\EntryPoint\Traits;
 
-use SugarAPI\Exception\EntryPointExecutionFailure;
+use SugarAPI\SDK\Exception\EntryPointExecutionFailure;
 
 trait EPTrait {
 
-    protected static $_AUTH_REQUIRED = true;
-    protected static $_MODULE;
-    protected static $_URL;
-    protected static $_REQUIRED_DATA;
+    protected $_AUTH_REQUIRED = true;
+    protected $_MODULE;
+    protected $_URL;
+    protected $_REQUIRED_DATA;
 
     protected $url;
     protected $Module;
@@ -20,11 +20,11 @@ trait EPTrait {
 
     public function __construct($url,$options = array()){
         $this->url = $url;
-        $this->Module = static::$_MODULE;
+        $this->Module = $this->_MODULE;
 
-        if (!empty($this->options)) {
-            if (empty($this->module)) {
-                if (strpos(static::$_URL, '$module') !== FALSE) {
+        if (!empty($options)) {
+            if (empty($this->Module)) {
+                if (strpos($this->_URL, '$module') !== FALSE) {
                     $this->module($options[0]);
                     array_shift($options);
                 }
@@ -39,7 +39,6 @@ trait EPTrait {
      */
     public function module($module){
         $this->Module = $module;
-        $this->configureURL();
         return $this;
     }
 
@@ -55,8 +54,8 @@ trait EPTrait {
      * @inheritdoc
      */
     public function data(array $data){
-        $this->Data = json_encode($data);
-        $this->Request->setBody($data);
+        $this->Data = $data;
+        $this->Request->setBody($this->Data);
         return $this;
     }
 
@@ -64,7 +63,7 @@ trait EPTrait {
      * @inheritdoc
      */
     public function execute(){
-        if ($this->verifyURL()) {
+        if ($this->verifyURL() && $this->validateData()) {
             $this->configureURL();
             $this->Request->setURL($this->url);
             $this->Request->send();
@@ -84,7 +83,7 @@ trait EPTrait {
      * @inheritdoc
      */
     public function authRequired() {
-        return static::$_AUTH_REQUIRED;
+        return $this->_AUTH_REQUIRED;
     }
 
     /**
@@ -98,7 +97,7 @@ trait EPTrait {
      *
      */
     public function getData(){
-       return json_decode($this->Data);
+       return $this->Data;
     }
 
     /**
@@ -128,19 +127,19 @@ trait EPTrait {
      * - Replcaes all other variables starting with $, with options in the order they were given
      */
     protected function configureURL(){
-        $url = static::$_URL;
-        if (strpos(static::$_URL,"$")!==FALSE) {
-            if (count($this->Options) > 0) {
-                $urlParts = explode("/", static::$_URL);
+        $url = $this->_URL;
+        if (strpos($this->_URL,"$")!==FALSE) {
+            if (count($this->Options) > 0 || !empty($this->Module)) {
+                $urlParts = explode("/", $this->_URL);
                 $o = 0;
                 foreach ($urlParts as $key => $part) {
                     if (strpos($part, '$module') !== FALSE) {
-                        if (isset($this->module)) {
-                            $urlParts[$key] = $this->module;
+                        if (isset($this->Module)) {
+                            $urlParts[$key] = $this->Module;
                             continue;
                         } else {
                             if (isset($this->Options[$o])) {
-                                $this->module = $this->Options[$o];
+                                $this->Module = $this->Options[$o];
                                 array_shift($this->Options);
                             }
                         }
@@ -164,7 +163,7 @@ trait EPTrait {
      * @throws EntryPointExecutionFailure
      */
     protected function verifyURL(){
-        $urlVarCount = substr_count(static::$_URL,"$");
+        $urlVarCount = substr_count($this->_URL,"$");
         $optionCount = 0;
         if (!empty($this->Module)){
             $optionCount++;
@@ -185,17 +184,19 @@ trait EPTrait {
      * @return bool
      */
     protected function validateData(){
-        if (empty(static::$_REQUIRED_DATA)){
+        if (empty($this->_REQUIRED_DATA)||count($this->_REQUIRED_DATA)==0){
             return true;
         }else{
             $errors = array();
-            foreach(static::$_REQUIRED_DATA as $property){
-                if (empty($this->Data[$property])){
+            foreach($this->_REQUIRED_DATA as $property){
+                if (isset($this->Data[$property]) || $this->Data[$property]!==null){
+                    continue;
+                }else{
                     $errors[] = $property;
                 }
             }
             if (count($errors)>0){
-                throw new EntryPointExecutionFailure('missing_data',implode($errors,", "));
+                throw new EntryPointExecutionFailure('missing_data');
             }else{
                 return true;
             }

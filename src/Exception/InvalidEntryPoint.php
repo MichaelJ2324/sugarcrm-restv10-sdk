@@ -1,9 +1,9 @@
 <?php
 
-namespace SugarAPI\Exception;
+namespace SugarAPI\SDK\Exception;
 
 
-use SugarAPI\Exception\Abstracts\AbstractException;
+use SugarAPI\SDK\Exception\Abstracts\AbstractException;
 
 class InvalidEntryPoint extends AbstractException{
 
