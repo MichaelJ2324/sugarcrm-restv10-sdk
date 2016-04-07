@@ -10,7 +10,7 @@ class PUT extends AbstractRequest{
 
     protected function setType(){
         parent::setType();
-        $this->setCurlOpt(CURLOPT_CUSTOMREQUEST, "PUT");
+        $this->setOption(CURLOPT_CUSTOMREQUEST, "PUT");
     }
 
 }

@@ -10,6 +10,6 @@ class POST extends AbstractRequest{
 
     protected function setType(){
         parent::setType();
-        $this->setCurlOpt(CURLOPT_POST, 1);
+        $this->setOption(CURLOPT_POST, 1);
     }
 }

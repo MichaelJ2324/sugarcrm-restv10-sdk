@@ -11,6 +11,7 @@ class AuthenticationError extends AbstractException{
     protected $failureCodes = array(
         'missing_user_pass' => 'Username or Password was not provided.',
         'invalid_user_pass' => 'The username or password provided were invalid.',
+        'no_auth' => 'SugarAPI SDK is not authenticated.'
     );
 
 }

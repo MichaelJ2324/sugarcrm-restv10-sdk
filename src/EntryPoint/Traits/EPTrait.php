@@ -30,7 +30,6 @@ trait EPTrait {
                 }
             }
             $this->options($options);
-            $this->configureURL();
         }
         $this->setupRequest();
     }
@@ -49,7 +48,6 @@ trait EPTrait {
      */
     public function options(array $options){
         $this->Options = $options;
-        $this->configureURL();
         return $this;
     }
 
@@ -67,9 +65,10 @@ trait EPTrait {
      */
     public function execute(){
         if ($this->verifyURL()) {
+            $this->configureURL();
             $this->Request->setURL($this->url);
             $this->Request->send();
-            $this->setupResonse();
+            $this->setupResponse();
         }
         return $this;
     }

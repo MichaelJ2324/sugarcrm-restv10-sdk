@@ -28,7 +28,7 @@ abstract class AbstractRequest implements RequestInterface{
     protected $type;
 
     public function __construct($url = null){
-        $this->resetCurl();
+        $this->start();
         if (!empty($url)){
             $this->setURL($url);
         }
@@ -76,6 +76,7 @@ abstract class AbstractRequest implements RequestInterface{
         curl_setopt($this->CurlRequest, $option, $value);
     }
     public function send() {
+        print($this->body);
         $this->CurlResponse = curl_exec($this->CurlRequest);
         return $this;
     }

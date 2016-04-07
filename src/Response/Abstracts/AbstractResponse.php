@@ -2,7 +2,7 @@
 
 namespace SugarAPI\SDK\Response\Abstracts;
 
-use SugarAPI\SDK\Response\ResponseInterface;
+use SugarAPI\SDK\Response\Interfaces\ResponseInterface;
 
 abstract class AbstractResponse implements ResponseInterface{
 

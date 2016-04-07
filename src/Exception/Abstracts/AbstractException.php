@@ -7,8 +7,8 @@ abstract class AbstractException extends \Exception{
     protected $defaultMessage = 'Unknown SugarAPI SDK Exception Occurred.';
     protected $failureCodes = array();
 
-    public function __construct($code) {
-        $message = $this->convertCode($code);
+    public function __construct($code,$string = '') {
+        $message = $this->convertCode($code,$string);
         parent::__construct($message, $code);
     }
 

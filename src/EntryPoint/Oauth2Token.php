@@ -2,6 +2,7 @@
 
 namespace SugarAPI\SDK\EntryPoint;
 
+use SugarAPI\SDK\EntryPoint\Abstracts\Abstract_POST_EntryPoint;
 
 class Oauth2Token extends Abstract_POST_EntryPoint {
 

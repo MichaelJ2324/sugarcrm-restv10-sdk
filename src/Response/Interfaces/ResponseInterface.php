@@ -1,6 +1,6 @@
 <?php
 
-namespace SugarAPI\SDK\Response;
+namespace SugarAPI\SDK\Response\Interfaces;
 
 
 interface ResponseInterface {

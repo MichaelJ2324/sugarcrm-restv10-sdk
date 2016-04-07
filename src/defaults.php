@@ -5,8 +5,8 @@ $defaults = array(
     'auth' => array(
         'username' => '',
         'password' => '',
-        'client_id' => '',
+        'client_id' => 'sugar',
         'client_secret' => '',
-        'platform' => ''
+        'platform' => 'api'
     )
 );

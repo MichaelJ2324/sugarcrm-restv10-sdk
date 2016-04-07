@@ -1,6 +1,6 @@
 <?php
 
-namespace SugarAPI\SDK\EntryPoint;
+namespace SugarAPI\SDK\EntryPoint\Abstracts;
 
 use SugarAPI\SDK\EntryPoint\Interfaces\EPInterface;
 use SugarAPI\SDK\EntryPoint\Traits\EPTrait;
@@ -15,7 +15,7 @@ abstract class Abstract_PUT_EntryPoint implements EPInterface{
         $this->Request = new PUT();
     }
     protected function setupResponse(){
-        $this->Response = new StandardResponse($this->Request->getResponse(),$this->Request->getRequest());
+        $this->Response = new StandardResponse($this->Request->getResponse(),$this->Request->getCurlObject());
     }
 
 }

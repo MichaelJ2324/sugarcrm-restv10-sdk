@@ -10,7 +10,7 @@ class DELETE extends AbstractRequest{
 
     protected function setType(){
         parent::setType();
-        $this->setCurlOpt(CURLOPT_CUSTOMREQUEST, "DELETE");
+        $this->setOption(CURLOPT_CUSTOMREQUEST, "DELETE");
     }
 
 }

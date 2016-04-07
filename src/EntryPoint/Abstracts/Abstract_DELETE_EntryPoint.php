@@ -1,6 +1,6 @@
 <?php
 
-namespace SugarAPI\SDK\EntryPoint;
+namespace SugarAPI\SDK\EntryPoint\Abstracts;
 
 
 use SugarAPI\SDK\EntryPoint\Interfaces\EPInterface;
@@ -16,7 +16,7 @@ abstract class Abstract_DELETE_EntryPoint implements EPInterface{
         $this->Request = new DELETE();
     }
     protected function setupResponse(){
-        $this->Response = new StandardResponse($this->Request->getResponse(),$this->Request->getRequest());
+        $this->Response = new StandardResponse($this->Request->getResponse(),$this->Request->getCurlObject());
     }
 
 }

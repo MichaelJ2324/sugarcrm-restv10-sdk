@@ -20,9 +20,9 @@ class SugarAPI {
         'grant_type' => 'password',
         'username' => '',
         'password' => '',
-        'client_id' => 'SugarAPI-SDK',
-        'client_secret' => 'SugarAPI-SDK-Secret',
-        'platform' => 'api'
+        'client_id' => '',
+        'client_secret' => '',
+        'platform' => ''
     );
     protected $authToken;
 
@@ -40,7 +40,7 @@ class SugarAPI {
     }
 
     protected function loadDefaults(){
-        include __DIR__ . 'defaults.php';
+        include __DIR__ .DIRECTORY_SEPARATOR.'defaults.php';
         if (isset($defaults)) {
             static::$_DEFAULTS = $defaults;
             if (isset($defaults['instance'])){
@@ -61,7 +61,7 @@ class SugarAPI {
     }
 
     protected function registerEntryPoints(){
-        require __DIR__ . 'EntryPoint' .DIRECTORY_SEPARATOR.'registry.php';
+        require __DIR__ .DIRECTORY_SEPARATOR.'EntryPoint' .DIRECTORY_SEPARATOR.'registry.php';
         if (isset($entryPoints)){
             $this->entryPoints = $entryPoints;
         }else{
@@ -75,7 +75,11 @@ class SugarAPI {
             $EntryPoint = new $className($this->url,$params);
 
             if ($EntryPoint->authRequired()){
-                $EntryPoint->getRequest()->addHeader('OAuth-Token',$this->authToken['access_token']);
+                if (isset($this->authToken)) {
+                    $EntryPoint->getRequest()->addHeader('OAuth-Token', $this->authToken->access_token);
+                }else{
+                    throw new AuthenticationError('no_auth');
+                }
             }
             return $EntryPoint;
         }else{
@@ -86,14 +90,20 @@ class SugarAPI {
         if (empty($this->authOptions['username']) || empty($this->authOptions['password'])){
             throw new AuthenticationError('missing_user_pass');
         }
-        $EP = $this->oauth2Token();
-        $this->authToken = $EP->data($this->authOptions)->execute()->getResponse()->getBody();
+        $EP = $this->accessToken();
+        echo "Test";
+        $response = $EP->data($this->authOptions)->execute()->getResponse();
+        if ($response->getStatus()=='200'){
+            $this->authToken = $response->getBody();
+        }else{
+            throw new AuthenticationError('failed_auth',$response->getBody());
+        }
     }
     public function setInstance($instance){
-        if (str_pos("https",$instance)!==FALSE){
+        if (strpos("https",$instance)!==FALSE){
             $this->secure = TRUE;
         }
-        if (str_pos("http",$instance)===FALSE){
+        if (strpos("http",$instance)===FALSE){
             $instance = "http://".$instance;
         }
         if (strpos("rest/v10",$instance)!==FALSE){
