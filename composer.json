@@ -1,0 +1,35 @@
+{
+  "name": "michaelj2324/SugarCRM-RESTv10-SDK",
+  "description": "An SDk for interacting with Sugar's REST v10 API.",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/Michael2324/SugarCRM_RESTv10_SDK.git"
+    }
+  ],
+  "keywords": [
+    "sugarcrm",
+    "sugar",
+    "crm",
+    "rest",
+    "sdk",
+    "v10",
+    "api"
+  ],
+  "authors": [
+    {
+      "name": "Mike Russell",
+      "email": "mr@mikejrussell.com",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "SugarAPI\\SDK\\": "src/"
+    }
+  }
+}
