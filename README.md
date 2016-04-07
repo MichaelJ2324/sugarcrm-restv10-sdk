@@ -5,7 +5,7 @@ The code allows for an Object Oriented method of accessing and manipulating the 
 
 ##Usage##
 ###Composer###
--- Packagist coming soon --
+<pre>composer require michaelj2324/sugarcrm-restv10-sdk</pre>
 
 ###Code###
 <pre>
