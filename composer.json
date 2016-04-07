@@ -1,5 +1,5 @@
 {
-  "name": "michaelj2324/SugarCRM-RESTv10-SDK",
+  "name": "michaelj2324/sugarcrm-restv10-SDK",
   "description": "An SDk for interacting with Sugar's REST v10 API.",
   "license": "MIT",
   "require": {
@@ -8,7 +8,7 @@
   "repositories": [
     {
       "type": "git",
-      "url": "https://github.com/MichaelJ2324/SugarCRM_RESTv10_SDK.git"
+      "url": "https://github.com/MichaelJ2324/sugarcrm-restv10-SDK.git"
     }
   ],
   "keywords": [
