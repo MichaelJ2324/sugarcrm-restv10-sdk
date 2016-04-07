@@ -14,9 +14,10 @@ The code allows for an Object Oriented method of accessing and manipulating the 
             'username' => 'user',
             'password' => 'pass'
   );
+  $id = '1234a';
   $SugarAPI = new \SugarAPI\SDK\SugarAPI($instance,$authOptions);
   $SugarAPI->login();
-  $record = $SugarAPI->filterRecords('Accounts')->execute()->getResponse()->getBody();
+  $record = $SugarAPI->getRecord('Accounts',$id)->execute()->getResponse()->getBody();
   echo $record->id;
 </pre>
 See examples directory for a few examples of manipulating data via the API.
