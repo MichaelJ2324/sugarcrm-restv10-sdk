@@ -7,7 +7,7 @@ interface EPInterface {
     /**
      * Set the module on the EntryPoint, that will be accessed via API
      * @param $module
-     * @return SugarAPI\SDK\EntryPoint Object
+     * @return \SugarAPI\SDK\EntryPoint\Abstracts\AbstractEntryPoint Object
      */
     public function module($module);
 
@@ -21,7 +21,7 @@ interface EPInterface {
     /**
      * The data/payload that will be use by the EntryPoint to be submitted to the API
      * @param array $data
-     * @return SugarAPI\SDK\EntryPoint Object
+     * @return \SugarAPI\SDK\EntryPoint\Abstracts\AbstractEntryPoint Object
      */
     public function data(array $data);
 
@@ -33,7 +33,7 @@ interface EPInterface {
 
     /**
      * Execute the EntryPoint Request
-     * @return SugarAPI\SDK\EntryPoint Object
+     * @return \SugarAPI\SDK\EntryPoint\Abstracts\AbstractEntryPoint Object
      */
     public function execute();
 
@@ -63,13 +63,13 @@ interface EPInterface {
 
     /**
      * Get the Response from the EntryPoint request
-     * @return SugarAPI\SDK\Response Object
+     * @return \SugarAPI\SDK\Response\Abstracts\AbstractResponse Object
      */
     public function getResponse();
 
     /**
      * Get the Request Object being used by the EntryPoint
-     * @return SugarAPI\SDK\Request Object
+     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
     public function getRequest();
 

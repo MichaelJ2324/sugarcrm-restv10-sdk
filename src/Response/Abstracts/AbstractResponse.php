@@ -20,12 +20,8 @@ abstract class AbstractResponse implements ResponseInterface{
     /**
      * @inheritdoc
      */
-    public function json($pretty = false){
-        if ($pretty){
-            return json_encode($this->body,JSON_PRETTY_PRINT);
-        }else{
-            return json_encode($this->body);
-        }
+    public function json(){
+        return json_encode($this->body);
     }
 
     /**

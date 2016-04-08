@@ -7,10 +7,9 @@ interface ResponseInterface {
 
     /**
      * Get the JSON Response
-     * @param bool $pretty - Pretty Print or not
      * @return string - JSON String of Data
      */
-    public function json($pretty = false);
+    public function json();
 
     /**
      * Get the Response HTTP Status Code

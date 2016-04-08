@@ -21,14 +21,14 @@ interface RequestInterface {
      * Add a Header to the Request Headers property, doesn't Set the CURL Option until Sending
      * @param $name - Header Name
      * @param $value - Header Value
-     * @return SugarAPI\SDK\Request Object
+     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
     public function addHeader($name,$value);
 
     /**
      * Sets the Headers on the Curl Request object, called during Sending. Appends to Request Headers property
      * @param array $array - Array containing Headers
-     * @return SugarAPI\SDK\Request Object
+     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
     public function setHeaders(array $array = array());
 
@@ -48,14 +48,14 @@ interface RequestInterface {
      * Set an Option on the Curl Resource
      * @param $option - Curl Option
      * @param $value - Curl Option Value
-     * @return SugarAPI\SDK\Request Object
+     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
     public function setOption($option,$value);
 
     /**
      * Set the URL on the Request Object
      * @param $url
-     * @return SugarAPI\SDK\Request Object
+     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
     public function setURL($url);
 
@@ -67,7 +67,7 @@ interface RequestInterface {
 
     /**
      * Execute the Curl Request. Before sending, Headers are added to the Curl Object
-     * @return SugarAPI\SDK\Request Object
+     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
     public function send();
 
@@ -79,10 +79,20 @@ interface RequestInterface {
 
     /**
      * Initialize Curl Resource
-     * @return SugarAPI\SDK\Request Object
+     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
     public function start();
+
+    /**
+     * Close the Curl Resource
+     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
+     */
     public function close();
+
+    /**
+     * Close and Restart the Curl Resource
+     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
+     */
     public function reset();
 
 }

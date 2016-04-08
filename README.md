@@ -2,10 +2,17 @@
 #SugarCRM REST v10 SDK#
 
 ##Overview##
-The code allows for an Object Oriented method of accessing and manipulating the SugarCRM REST v10 API.
+A simple and intuitive Library for accessing a Sugar 7's REST v10 API. Allows for Object Oriented design around accessing data from a SugarCRM system, so you can easily get your integration project underway.
 
 ##Usage##
 ###Composer###
+You can easily add the Library to a project, by adding the Package to your composer.json file.
+<pre>
+    "require": {
+        "michaelj2324/sugarcrm-restv10-sdk": '>=0.5'
+    },
+</pre>
+Otherwise you can pull down the package using
 <pre>composer require michaelj2324/sugarcrm-restv10-sdk</pre>
 
 ###Code###
@@ -32,5 +39,7 @@ See examples directory for a few examples of manipulating data via the API.
  - Get Module Record
 - \<module\>/:record - PUT
  - Update Module Record
+- \<module\>/:record/favorite - PUT
+ - Favorite a Module Record
 - oauth2/token - POST
  - Login, and Refresh Token
