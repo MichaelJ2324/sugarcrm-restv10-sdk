@@ -17,6 +17,9 @@ abstract class AbstractResponse implements ResponseInterface{
         $this->status = curl_getinfo($curlRequest,CURLINFO_HTTP_CODE);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function json($pretty = false){
         if ($pretty){
             return json_encode($this->body,JSON_PRETTY_PRINT);
@@ -24,12 +27,24 @@ abstract class AbstractResponse implements ResponseInterface{
             return json_encode($this->body);
         }
     }
+
+    /**
+     * @inheritdoc
+     */
     public function getStatus(){
         return $this->status;
     }
+
+    /**
+     * @inheritdoc
+     */
     public function getBody() {
         return $this->body;
     }
+
+    /**
+     * @inheritdoc
+     */
     public function getHeaders() {
         return $this->headers;
     }

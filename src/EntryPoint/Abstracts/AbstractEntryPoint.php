@@ -1,10 +1,13 @@
 <?php
 
-namespace SugarAPI\SDK\EntryPoint\Traits;
+namespace SugarAPI\SDK\EntryPoint\Abstracts;
 
-use SugarAPI\SDK\Exception\EntryPointExecutionFailure;
 
-trait EPTrait {
+use SugarAPI\SDK\EntryPoint\Interfaces\EPInterface;
+use SugarAPI\SDK\Request\POST;
+use SugarAPI\SDK\Response\Standard as StandardResponse;
+
+abstract class AbstractEntryPoint implements EPInterface {
 
     protected $_AUTH_REQUIRED = true;
     protected $_MODULE;
@@ -97,7 +100,7 @@ trait EPTrait {
      *
      */
     public function getData(){
-       return $this->Data;
+        return $this->Data;
     }
 
     /**
@@ -158,6 +161,20 @@ trait EPTrait {
     }
 
     /**
+     * Setup the Request Object property, setup on initial Construct of EntryPoint
+     */
+    protected function setupRequest(){
+        $this->Request = new POST();
+    }
+
+    /**
+     * Setup the Response Object Property, not called until after Request Execution
+     */
+    protected function setupResponse(){
+        $this->Response = new StandardResponse($this->Request->getResponse(),$this->Request->getCurlObject());
+    }
+
+    /**
      * Verify URL variables have been removed, and that valid number of options were passed.
      * @return bool
      * @throws EntryPointExecutionFailure
@@ -202,4 +219,5 @@ trait EPTrait {
             }
         }
     }
+
 }

@@ -1,14 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mrussell
- * Date: 4/5/16
- * Time: 11:43 AM
- */
 
 namespace SugarAPI\SDK\EntryPoint;
 
+use SugarAPI\SDK\EntryPoint\Abstracts\Abstract_GET_EntryPoint;
 
-class Ping {
+class Ping extends Abstract_GET_EntryPoint {
+
+    protected $_URL = 'ping';
 
 }

@@ -8,6 +8,11 @@ class PUT extends AbstractRequest{
 
     protected static $_TYPE = 'PUT';
 
+    /**
+     * @inheritdoc
+     *
+     * Set the Curl Custom Request Option to PUT
+     */
     protected function setType(){
         parent::setType();
         $this->setOption(CURLOPT_CUSTOMREQUEST, "PUT");

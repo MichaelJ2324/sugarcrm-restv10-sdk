@@ -7,7 +7,6 @@ use SugarAPI\SDK\EntryPoint\Abstracts\Abstract_POST_EntryPoint;
 
 class RefreshToken extends Abstract_POST_EntryPoint {
 
-    protected $_AUTH_REQUIRED = false;
     protected $_REQUIRED_DATA = array(
         'grant_type',
         'refresh_token',

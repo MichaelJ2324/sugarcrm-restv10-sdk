@@ -8,5 +8,4 @@ class CreateRecord extends Abstract_POST_EntryPoint{
 
     protected $_URL = '$module';
 
-
 }
