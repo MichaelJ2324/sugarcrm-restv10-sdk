@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/MichaelJ2324/sugarcrm-restv10-sdk.png?label=ready&title=Ready)](https://waffle.io/MichaelJ2324/sugarcrm-restv10-sdk)
 #SugarCRM REST v10 SDK#
 
 ##Overview##
