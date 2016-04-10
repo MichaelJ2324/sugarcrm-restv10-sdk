@@ -7,19 +7,19 @@ interface ResponseInterface {
 
     /**
      * Get the Response HTTP Status Code
-     * @return mixed
+     * @return string
      */
     public function getStatus();
 
     /**
      * Get the Response Body
-     * @return mixed
+     * @return string
      */
     public function getBody();
 
     /**
      * Get the Response Headers
-     * @return mixed
+     * @return string
      */
     public function getHeaders();
 

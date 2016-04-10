@@ -7,6 +7,9 @@ use SugarAPI\SDK\Request\PUT;
 
 abstract class JSONEntryPoint extends AbstractEntryPoint {
 
+    /**
+     * @inheritdoc
+     */
     protected function setupRequest(){
         $this->Request = new PUT();
     }

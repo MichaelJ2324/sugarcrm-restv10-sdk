@@ -6,29 +6,29 @@ interface RequestInterface {
 
     /**
      * Set the Body to Request
-     * @param $array
+     * @param array
      * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
-    public function setBody($array);
+    public function setBody(array $array);
 
     /**
      * Get the Body on the request
-     * @return mixed
+     * @return array
      */
     public function getBody();
 
     /**
      * Add a Header to the Request Headers property, doesn't Set the CURL Option until Sending
-     * @param $name - Header Name
-     * @param $value - Header Value
-     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
+     * @param string - Header Name
+     * @param string - Header Value
+     * @return \SugarAPI\SDK\Request\Interfaces\RequestInterface
      */
     public function addHeader($name,$value);
 
     /**
      * Sets the Headers on the Curl Request object, called during Sending. Appends to Request Headers property
-     * @param array $array - Array containing Headers
-     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
+     * @param array $array
+     * @return \SugarAPI\SDK\Request\Interfaces\RequestInterface
      */
     public function setHeaders(array $array = array());
 
@@ -46,16 +46,16 @@ interface RequestInterface {
 
     /**
      * Set an Option on the Curl Resource
-     * @param $option - Curl Option
-     * @param $value - Curl Option Value
-     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
+     * @param mixed $option - Curl Option
+     * @param mixed $value - Curl Option Value
+     * @return \SugarAPI\SDK\Request\Interfaces\RequestInterface
      */
     public function setOption($option,$value);
 
     /**
      * Set the URL on the Request Object
-     * @param $url
-     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
+     * @param string $url
+     * @return \SugarAPI\SDK\Request\Interfaces\RequestInterface
      */
     public function setURL($url);
 
@@ -67,7 +67,7 @@ interface RequestInterface {
 
     /**
      * Execute the Curl Request. Before sending, Headers are added to the Curl Object
-     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
+     * @return \SugarAPI\SDK\Request\Interfaces\RequestInterface
      */
     public function send();
 
@@ -79,19 +79,19 @@ interface RequestInterface {
 
     /**
      * Initialize Curl Resource
-     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
+     * @return \SugarAPI\SDK\Request\Interfaces\RequestInterface
      */
     public function start();
 
     /**
      * Close the Curl Resource
-     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
+     * @return \SugarAPI\SDK\Request\Interfaces\RequestInterface
      */
     public function close();
 
     /**
      * Close and Restart the Curl Resource
-     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
+     * @return \SugarAPI\SDK\Request\Interfaces\RequestInterface
      */
     public function reset();
 

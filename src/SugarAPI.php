@@ -82,7 +82,7 @@ class SugarAPI {
 
             if ($EntryPoint->authRequired()){
                 if (isset($this->authToken)) {
-                    $EntryPoint->getRequest()->addHeader('OAuth-Token', $this->authToken->access_token);
+                    $EntryPoint->configureAuth($this->authToken->access_token);
                 }else{
                     throw new AuthenticationException('no_auth');
                 }

@@ -5,12 +5,12 @@ $entryPoints = array(
     'ping' => 'GET\\Ping',
     'getRecord' => 'GET\\ModuleRecord',
     'getAttachment' => 'GET\\RecordFileField',
-    'filterRecords' => 'POST\\FilterRecords',
 
     //POST API EntryPoints
     'accessToken' => 'POST\\Oauth2Token',
     'refreshToken' => 'POST\\RefreshToken',
     'createRecord' => 'POST\\CreateRecord',
+    'filterRecords' => 'POST\\FilterRecords',
     'attachFile' => 'POST\\RecordFileField',
     //TODO: 'relateRecords' => 'POST\\RelateRecords',
 

@@ -10,17 +10,80 @@ use SugarAPI\SDK\Response\JSON as JSONResponse;
 
 abstract class AbstractEntryPoint implements EPInterface {
 
+    /**
+     * Whether or not Authentication is Required
+     * @var bool
+     */
     protected $_AUTH_REQUIRED = true;
+
+    /**
+     * The default Module for the EntryPoint
+     * @var string
+     */
     protected $_MODULE;
+
+    /**
+     * The URL for the EntryPoint
+     * - When configuring URL you define URL Parameters with $variables
+     *      Examples:
+     *          - Forecasts/$record_id
+     * - $module Variable is a keyword to place the Module property into the URL
+     *      Examples:
+     *          - $module/$record
+     * - Options property is used to replace variables in the order in which they are passed
+     *
+     * @var string
+     */
     protected $_URL;
+
+    /**
+     * An array of Required Data properties that should be passed in the Request
+     * @var array
+     */
     protected $_REQUIRED_DATA;
 
+    /**
+     * The configured URL for the EntryPoint
+     * @var string
+     */
     protected $url;
+
+    /**
+     * The configured Module for the EntryPoint
+     * @var string
+     */
     protected $Module;
+
+    /**
+     * The passed in Options for the EntryPoint
+     * - If $module variable is used in $_URL static property, then 1st option will be used as Module
+     * @var array
+     */
     protected $Options = array();
+
+    /**
+     * The data being passed to the API EntryPoint
+     * @var mixed - array or Std Object
+     */
     protected $Data;
+
+    /**
+     * The Request Object, used by the EntryPoint to submit the data
+     * @var Object
+     */
     protected $Request;
+
+    /**
+     * The Response Object, returned by the Request Object
+     * @var Object
+     */
     protected $Response;
+
+    /**
+     * Access Token for authentication
+     * @var string
+     */
+    protected $accessToken;
 
     public function __construct($url,$options = array()){
         $this->url = $url;
@@ -78,7 +141,6 @@ abstract class AbstractEntryPoint implements EPInterface {
         return $this;
     }
 
-
     /**
      * @inheritdoc
      */
@@ -89,12 +151,23 @@ abstract class AbstractEntryPoint implements EPInterface {
     /**
      * @inheritdoc
      */
+    public function configureAuth($accessToken) {
+        if ($this->authRequired()){
+            $this->accessToken = $accessToken;
+            $this->Request->addHeader('OAuth-Token', $accessToken);
+        }
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getModule() {
         return $this->Module;
     }
 
     /**
-     *
+     * @inheritdoc
      */
     public function getData(){
         return $this->Data;
@@ -124,7 +197,7 @@ abstract class AbstractEntryPoint implements EPInterface {
     /**
      * Configures the URL, by updating any variable placeholders in the URL property on the EntryPoint
      * - Replaces $module with $this->Module
-     * - Replcaes all other variables starting with $, with options in the order they were given
+     * - Replaces all other variables starting with $, with options in the order they were given
      */
     protected function configureURL(){
         $url = $this->_URL;
@@ -174,7 +247,7 @@ abstract class AbstractEntryPoint implements EPInterface {
     /**
      * Verify URL variables have been removed, and that valid number of options were passed.
      * @return bool
-     * @throws EntryPointExecutionFailure
+     * @throws EntryPointException
      */
     protected function verifyURL(){
         $urlVarCount = substr_count($this->_URL,"$");
@@ -195,7 +268,9 @@ abstract class AbstractEntryPoint implements EPInterface {
     }
 
     /**
+     * Validate Required Data for the Request
      * @return bool
+     * @throws EntryPointException
      */
     protected function validateData(){
         if (empty($this->_REQUIRED_DATA)||count($this->_REQUIRED_DATA)==0){

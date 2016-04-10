@@ -6,8 +6,14 @@ use SugarAPI\SDK\Request\Abstracts\AbstractRequest;
 
 class GET extends AbstractRequest {
 
+    /**
+     * @inheritdoc
+     */
     protected static $_TYPE = 'GET';
 
+    /**
+     * @inheritdoc
+     */
     protected static $_DEFAULT_HEADERS = array(
         "Content-Type: application/json"
     );
@@ -17,7 +23,7 @@ class GET extends AbstractRequest {
      *
      * Convert Body to Query String
      */
-    public function setBody($body){
+    public function setBody(array $body){
         $this->body = http_build_query($body);
         return $this;
     }
@@ -28,7 +34,11 @@ class GET extends AbstractRequest {
      * Configure the URL with Body since Payload is sent via Query String
      */
     public function send(){
-        $this->setURL($this->url."?".$this->body);
+        $body = '';
+        if (!empty($this->body)){
+            $body = "?".$this->body;
+        }
+        $this->setURL($this->url.$body);
         return parent::send();
     }
 

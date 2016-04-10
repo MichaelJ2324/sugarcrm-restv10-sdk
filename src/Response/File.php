@@ -7,7 +7,8 @@ use SugarAPI\SDK\Response\Abstracts\AbstractResponse;
 class File extends AbstractResponse {
 
     /**
-     * @var
+     * The name of the File from Response
+     * @var string
      */
     protected $fileName;
 
@@ -21,12 +22,16 @@ class File extends AbstractResponse {
         parent::__construct($curlResponse, $curlRequest);
         $this->extractFileName();
         if (!empty($destination)) {
-            $this->setupDestiantion($destination);
+            $this->setupDestination($destination);
             $this->writeFile();
         }
     }
 
-    protected function setupDestiantion($destination = null){
+    /**
+     * Configure the Destination path to store the File response
+     * @param null $destination
+     */
+    protected function setupDestination($destination = null){
         if (empty($destination)){
             $destination = sys_get_temp_dir().'/SugarAPI';
             if (!file_exists($destination)){
@@ -36,6 +41,9 @@ class File extends AbstractResponse {
         $this->destinationPath = $destination;
     }
 
+    /**
+     * Extract the filename from the Headers, and store it in filename property
+     */
     protected function extractFileName(){
         foreach (explode("\r\n",$this->headers) as $header)
         {
@@ -45,16 +53,27 @@ class File extends AbstractResponse {
         }
     }
 
+    /**
+     * Return the filename found in response
+     * @return mixed
+     */
     public function getFileName(){
         return $this->fileName;
     }
 
+    /**
+     * Write the downloaded file
+     */
     protected function writeFile(){
         $fileHandle = fopen($this->file(),'w+');
         fwrite($fileHandle,$this->body);
         fclose($fileHandle);
     }
 
+    /**
+     * Return the full File path, where Response was stored
+     * @return string
+     */
     public function file(){
         return rtrim($this->destinationPath,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$this->fileName;
     }

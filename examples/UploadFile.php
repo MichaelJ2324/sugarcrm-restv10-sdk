@@ -10,17 +10,13 @@ try{
     if ($response->getStatus()=='200'){
         $record = $response->getBody();
 
-        $uplaodFileParams = array(
-            "format" => "sugar-html-json",
-            "delete_if_fails" => true,
-            "oauth_token" => $SugarAPI->getToken()->access_token,
-            'filename' => '@'.__DIR__.'/testfile.txt;filename=testfile.txt'
-        );
-        $upload = $SugarAPI->attachFile('Notes',$record->id,'filename')->data($uplaodFileParams)->execute();
+        $upload = $SugarAPI->attachFile('Notes',$record->id,'filename')->data(array(
+            'filename' => __DIR__.'/testfile.txt;filename=testfile.txt'
+        ))->execute();
         $response = $upload->getResponse();
         if ($response->getStatus()=='200'){
             $record = $response->getBody();
-            print_r($response);
+            print_r($record);
         }else{
             print_r($upload->getRequest());
             echo "Failed to Update Note with File<br>";

@@ -134,7 +134,7 @@ abstract class AbstractRequest implements RequestInterface{
     /**
      * @inheritdoc
      */
-    public function setBody($body) {
+    public function setBody(array $body) {
         $this->body = $body;
         $this->setOption(CURLOPT_POSTFIELDS, $this->body);
         return $this;
