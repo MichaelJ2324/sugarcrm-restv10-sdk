@@ -15,7 +15,7 @@ try{
     ))->execute()->getResponse()->getBody();
     echo "Updated Record: ".$record->id;
 
-}catch(\SugarAPI\SDK\Exception\AuthenticationError $ex){
+}catch(\SugarAPI\SDK\Exception\AuthenticationException $ex){
     print $ex->getMessage();
 }
 

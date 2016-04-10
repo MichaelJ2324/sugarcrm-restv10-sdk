@@ -19,6 +19,6 @@ try{
         print_r($getResponse->getBody());
     }
 
-}catch(\SugarAPI\SDK\Exception\AuthenticationError $ex){
+}catch(\SugarAPI\SDK\Exception\AuthenticationException $ex){
     print $ex->getMessage();
 }

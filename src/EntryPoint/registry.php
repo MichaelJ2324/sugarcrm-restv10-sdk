@@ -1,15 +1,23 @@
 <?php
 
 $entryPoints = array(
-    'ping' => 'Ping',
-    'getRecord' => 'ModuleRecord',
-    'filterRecords' => 'FilterRecords',
-    'accessToken' => 'Oauth2Token',
-    'refreshToken' => 'RefreshToken',
-    'createRecord' => 'CreateRecord',
-    'deleteRecord' => 'DeleteRecord',
-    'updateRecord' => 'UpdateRecord',
-    //TODO: Build out File Response and Request Objects and Implement this shit - 'attachFile' => 'RecordFileField',
-    'relateRecords' => 'RelateRecords',
-    'favorite' => 'FavoriteRecord'
+    //GET API EntryPoints
+    'ping' => 'GET\\Ping',
+    'getRecord' => 'GET\\ModuleRecord',
+    'getAttachment' => 'GET\\RecordFileField',
+    'filterRecords' => 'POST\\FilterRecords',
+
+    //POST API EntryPoints
+    'accessToken' => 'POST\\Oauth2Token',
+    'refreshToken' => 'POST\\RefreshToken',
+    'createRecord' => 'POST\\CreateRecord',
+    'attachFile' => 'POST\\RecordFileField',
+    //TODO: 'relateRecords' => 'POST\\RelateRecords',
+
+    //PUT API EntryPoints
+    'updateRecord' => 'PUT\\UpdateRecord',
+    'favorite' => 'PUT\\FavoriteRecord',
+
+    //DELETE API EntryPoints
+    'deleteRecord' => 'DELETE\\DeleteRecord'
 );

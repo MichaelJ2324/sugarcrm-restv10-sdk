@@ -4,9 +4,13 @@ namespace SugarAPI\SDK\Request;
 
 use SugarAPI\SDK\Request\Abstracts\AbstractRequest;
 
-class GET extends AbstractRequest{
+class GET extends AbstractRequest {
 
     protected static $_TYPE = 'GET';
+
+    protected static $_DEFAULT_HEADERS = array(
+        "Content-Type: application/json"
+    );
 
     /**
      * @inheritdoc
@@ -15,6 +19,7 @@ class GET extends AbstractRequest{
      */
     public function setBody($body){
         $this->body = http_build_query($body);
+        return $this;
     }
 
     /**

@@ -6,12 +6,6 @@ namespace SugarAPI\SDK\Response\Interfaces;
 interface ResponseInterface {
 
     /**
-     * Get the JSON Response
-     * @return string - JSON String of Data
-     */
-    public function json();
-
-    /**
      * Get the Response HTTP Status Code
      * @return mixed
      */
@@ -28,5 +22,11 @@ interface ResponseInterface {
      * @return mixed
      */
     public function getHeaders();
+
+    /**
+     * Get the Request Errors if they occurred
+     * @return string
+     */
+    public function getError();
 
 }

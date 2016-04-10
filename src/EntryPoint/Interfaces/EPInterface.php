@@ -38,12 +38,6 @@ interface EPInterface {
     public function execute();
 
     /**
-     * Get the status of the EntryPoint Request
-     * @return integer - HTTP Status Code
-     */
-    public function status();
-
-    /**
      * Get the module that is set on the EntryPoint
      * @return string - configured module
      */

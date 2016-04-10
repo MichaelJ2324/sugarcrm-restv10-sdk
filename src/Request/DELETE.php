@@ -8,6 +8,10 @@ class DELETE extends AbstractRequest{
 
     protected static $_TYPE = 'DELETE';
 
+    protected static $_DEFAULT_HEADERS = array(
+        "Content-Type: application/json"
+    );
+
     /**
      * @inheritdoc
      *
@@ -16,6 +20,10 @@ class DELETE extends AbstractRequest{
     protected function setType(){
         parent::setType();
         $this->setOption(CURLOPT_CUSTOMREQUEST, "DELETE");
+    }
+
+    public function setBody($body) {
+        return parent::setBody(json_encode($body));
     }
 
 }

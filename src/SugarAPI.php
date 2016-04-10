@@ -4,7 +4,8 @@ namespace SugarAPI\SDK;
 
 use SugarAPI\SDK\Exception\InitializationFailure;
 use SugarAPI\SDK\Exception\InvalidEntryPoint;
-use SugarAPI\SDK\Exception\AuthenticationError;
+use SugarAPI\SDK\Exception\AuthenticationException;
+use SugarAPI\SDK\Exception\SDKException;
 
 class SugarAPI {
 
@@ -14,7 +15,6 @@ class SugarAPI {
 
     protected $instance;
     protected $url;
-    protected $secure = false;
 
     protected $authOptions = array(
         'grant_type' => 'password',
@@ -34,9 +34,9 @@ class SugarAPI {
             $this->setInstance($instance);
         }
         if (!empty($authOptions)){
-            $this->configureAuth($authOptions);
+            $this->setAuthOptions($authOptions);
         }
-        $this->registerEntryPoints();
+        $this->registerSDKEntryPoints();
     }
 
     protected function loadDefaults(){
@@ -47,12 +47,12 @@ class SugarAPI {
                 $this->setInstance($defaults['instance']);
             }
             if (isset($defaults['auth']) && is_array($defaults['auth'])){
-                $this->configureAuth($defaults['auth']);
+                $this->setAuthOptions($defaults['auth']);
             }
         }
     }
 
-    public function configureAuth(array $options){
+    public function setAuthOptions(array $options){
         foreach($this->authOptions as $key => $value){
             if (isset($options[$key])){
                 $this->authOptions[$key] = $options[$key];
@@ -60,42 +60,48 @@ class SugarAPI {
         }
     }
 
-    protected function registerEntryPoints(){
+    protected function registerSDKEntryPoints(){
         require __DIR__ .DIRECTORY_SEPARATOR.'EntryPoint' .DIRECTORY_SEPARATOR.'registry.php';
-        if (isset($entryPoints)){
-            $this->entryPoints = $entryPoints;
-        }else{
-            throw new InitializationFailure('no_ep_registry');
+        foreach($entryPoints as $funcName => $className){
+            $className = "SugarAPI\\SDK\\EntryPoint\\".$className;
+            $this->registerEntryPoint($funcName,$className);
         }
+    }
+
+    public function registerEntryPoint($funcName,$className){
+        if (isset($this->entryPoints[$funcName])){
+            throw new SDKException('SDK method already defined. Method '.$funcName.' references Class '.$className);
+        }
+        $this->entryPoints[$funcName] = $className;
     }
 
     public function __call($name,$params){
         if (array_key_exists($name,$this->entryPoints)){
-            $className = "SugarAPI\\SDK\\EntryPoint\\".$this->entryPoints[$name];
-            $EntryPoint = new $className($this->url,$params);
+            $Class = $this->entryPoints[$name];
+            $EntryPoint = new $Class($this->url,$params);
 
             if ($EntryPoint->authRequired()){
                 if (isset($this->authToken)) {
                     $EntryPoint->getRequest()->addHeader('OAuth-Token', $this->authToken->access_token);
                 }else{
-                    throw new AuthenticationError('no_auth');
+                    throw new AuthenticationException('no_auth');
                 }
             }
             return $EntryPoint;
         }else{
-            throw new InvalidEntryPoint('invalid_ep');
+            throw new SDKException('Method '.$name.', is not a registered method of the SugarAPI SDK');
         }
     }
     public function login(){
         if (empty($this->authOptions['username']) || empty($this->authOptions['password'])){
-            throw new AuthenticationError('missing_user_pass');
+            throw new AuthenticationException("Username or Password was not provided.");
         }
         $EP = $this->accessToken();
         $response = $EP->data($this->authOptions)->execute()->getResponse();
         if ($response->getStatus()=='200'){
             $this->authToken = $response->getBody();
         }else{
-            throw new AuthenticationError('failed_auth');
+            throw new AuthenticationException($response->getBody());
         }
     }
     public function setInstance($instance){
@@ -116,5 +122,8 @@ class SugarAPI {
     }
     public function getToken(){
         return $this->authToken;
+    }
+    public function getAuthOptions(){
+        return $this->authOptions;
     }
 }

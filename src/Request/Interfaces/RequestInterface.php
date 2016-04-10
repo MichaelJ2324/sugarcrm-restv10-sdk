@@ -7,7 +7,7 @@ interface RequestInterface {
     /**
      * Set the Body to Request
      * @param $array
-     * @return SugarAPI\SDK\Request Object
+     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
     public function setBody($array);
 
@@ -94,5 +94,11 @@ interface RequestInterface {
      * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
     public function reset();
+
+    /**
+     * Get the Status of the Curl Object
+     * @return string - Initialized, Sent or Closed
+     */
+    public function getCurlStatus();
 
 }

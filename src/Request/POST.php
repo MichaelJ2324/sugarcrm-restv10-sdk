@@ -8,6 +8,10 @@ class POST extends AbstractRequest{
 
     protected static $_TYPE = 'POST';
 
+    protected static $_DEFAULT_HEADERS = array(
+        "Content-Type: application/json"
+    );
+
     /**
      * @inheritdoc
      *
@@ -16,5 +20,9 @@ class POST extends AbstractRequest{
     protected function setType(){
         parent::setType();
         $this->setOption(CURLOPT_POST, 1);
+    }
+
+    public function setBody($body) {
+        return parent::setBody(json_encode($body));
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace SugarAPI\SDK\EntryPoint;
+namespace SugarAPI\SDK\EntryPoint\POST;
 
-use SugarAPI\SDK\EntryPoint\Abstracts\Abstract_POST_EntryPoint;
+use SugarAPI\SDK\EntryPoint\Abstracts\POST\JSONEntryPoint as POSTEntryPoint;
 
-class Oauth2Token extends Abstract_POST_EntryPoint {
+class Oauth2Token extends POSTEntryPoint {
 
     protected $_AUTH_REQUIRED = false;
     protected $_URL = 'oauth2/token';

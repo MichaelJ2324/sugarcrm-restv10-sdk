@@ -4,8 +4,9 @@ namespace SugarAPI\SDK\EntryPoint\Abstracts;
 
 
 use SugarAPI\SDK\EntryPoint\Interfaces\EPInterface;
+use SugarAPI\SDK\Exception\EntryPointException;
 use SugarAPI\SDK\Request\POST;
-use SugarAPI\SDK\Response\Standard as StandardResponse;
+use SugarAPI\SDK\Response\JSON as JSONResponse;
 
 abstract class AbstractEntryPoint implements EPInterface {
 
@@ -71,16 +72,12 @@ abstract class AbstractEntryPoint implements EPInterface {
             $this->Request->setURL($this->url);
             $this->Request->send();
             $this->setupResponse();
+            //Trying to manage memory by closing Curl Resource
+            $this->Request->close();
         }
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function status(){
-        $this->Request->getStatus();
-    }
 
     /**
      * @inheritdoc
@@ -171,7 +168,7 @@ abstract class AbstractEntryPoint implements EPInterface {
      * Setup the Response Object Property, not called until after Request Execution
      */
     protected function setupResponse(){
-        $this->Response = new StandardResponse($this->Request->getResponse(),$this->Request->getCurlObject());
+        $this->Response = new JSONResponse($this->Request->getResponse(),$this->Request->getCurlObject());
     }
 
     /**
@@ -187,10 +184,10 @@ abstract class AbstractEntryPoint implements EPInterface {
         }
         $optionCount += count($this->Options);
         if ($urlVarCount!==$optionCount){
-            if (empty($this->Module)){
-                throw new EntryPointExecutionFailure('missing_module');
+            if (empty($this->Module) && strpos($this->_URL,'$module')){
+                throw new EntryPointException('Module is required for EntryPoint '.get_called_class());
             }else{
-                throw new EntryPointExecutionFailure('missing_options');
+                throw new EntryPointException('EntryPoint URL ('.$this->_URL.') requires more parameters than passed.');
             }
         }else{
             return true;
@@ -213,7 +210,7 @@ abstract class AbstractEntryPoint implements EPInterface {
                 }
             }
             if (count($errors)>0){
-                throw new EntryPointExecutionFailure('missing_data');
+                throw new EntryPointException('EntryPoint requires specific properties in Request data. Missing the following '.implode($errors,","));
             }else{
                 return true;
             }

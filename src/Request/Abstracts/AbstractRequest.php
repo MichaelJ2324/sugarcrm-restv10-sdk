@@ -6,6 +6,10 @@ use SugarAPI\SDK\Request\Interfaces\RequestInterface;
 
 abstract class AbstractRequest implements RequestInterface{
 
+    const STATUS_INIT = 'initialized';
+    const STATUS_SENT = 'sent';
+    const STATUS_CLOSED = 'closed';
+
     /**
      * The HTTP Request Type
      * @var string
@@ -23,13 +27,12 @@ abstract class AbstractRequest implements RequestInterface{
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_FOLLOWLOCATION => 0
     );
+
     /**
      * The default HTTP Headers to be added to Curl Request
      * @var array
      */
-    protected static $_DEFAULT_HEADERS = array(
-        "Content-Type: application/json"
-    );
+    protected static $_DEFAULT_HEADERS = array();
 
     /**
      * The Curl Resource used to actually send data to Sugar API
@@ -60,6 +63,11 @@ abstract class AbstractRequest implements RequestInterface{
      * @var string
      */
     protected $url = '';
+
+    /**
+     * @var null
+     */
+    protected $status = null;
 
     /**
      * The Request Type
@@ -127,7 +135,7 @@ abstract class AbstractRequest implements RequestInterface{
      * @inheritdoc
      */
     public function setBody($body) {
-        $this->body = json_encode($body);
+        $this->body = $body;
         $this->setOption(CURLOPT_POSTFIELDS, $this->body);
         return $this;
     }
@@ -136,7 +144,7 @@ abstract class AbstractRequest implements RequestInterface{
      * @inheritdoc
      */
     public function getBody() {
-        return json_decode($this->body);
+        return $this->body;
     }
 
     /**
@@ -159,6 +167,7 @@ abstract class AbstractRequest implements RequestInterface{
     public function send() {
         $this->setHeaders();
         $this->CurlResponse = curl_exec($this->CurlRequest);
+        $this->status = self::STATUS_SENT;
         return $this;
     }
 
@@ -192,6 +201,7 @@ abstract class AbstractRequest implements RequestInterface{
      */
     public function start() {
         $this->CurlRequest = curl_init();
+        $this->status = self::STATUS_INIT;
         return $this;
     }
 
@@ -201,6 +211,14 @@ abstract class AbstractRequest implements RequestInterface{
     public function close(){
         curl_close($this->CurlRequest);
         unset($this->CurlRequest);
+        $this->status = self::STATUS_CLOSED;
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCurlStatus() {
+        return $this->status;
     }
 }

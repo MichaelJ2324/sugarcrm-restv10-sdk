@@ -1,11 +1,11 @@
 <?php
 
-namespace SugarAPI\SDK\EntryPoint;
+namespace SugarAPI\SDK\EntryPoint\POST;
 
 
-use SugarAPI\SDK\EntryPoint\Abstracts\Abstract_POST_EntryPoint;
+use SugarAPI\SDK\EntryPoint\Abstracts\POST\JSONEntryPoint as POSTEntryPoint;
 
-class RefreshToken extends Abstract_POST_EntryPoint {
+class RefreshToken extends POSTEntryPoint {
 
     protected $_REQUIRED_DATA = array(
         'grant_type',
