@@ -4,7 +4,7 @@ namespace SugarAPI\SDK\Request\Abstracts;
 
 use SugarAPI\SDK\Request\Interfaces\RequestInterface;
 
-abstract class AbstractRequest implements RequestInterface{
+abstract class AbstractRequest implements RequestInterface {
 
     const STATUS_INIT = 'initialized';
     const STATUS_SENT = 'sent';
@@ -22,7 +22,7 @@ abstract class AbstractRequest implements RequestInterface{
      */
     protected static $_DEFAULT_OPTIONS = array(
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
-        CURLOPT_HEADER => true,
+        CURLOPT_HEADER => TRUE,
         CURLOPT_SSL_VERIFYPEER => 0,
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_FOLLOWLOCATION => 0
@@ -67,7 +67,7 @@ abstract class AbstractRequest implements RequestInterface{
     /**
      * @var null
      */
-    protected $status = null;
+    protected $status = NULL;
 
     /**
      * The Request Type
@@ -75,37 +75,37 @@ abstract class AbstractRequest implements RequestInterface{
      */
     protected $type;
 
-    public function __construct($url = null){
+    public function __construct($url = NULL){
         $this->start();
         if (!empty($url)){
             $this->setURL($url);
         }
         $this->setType();
-        foreach(static::$_DEFAULT_OPTIONS as $option => $value){
-            $this->setOption($option,$value);
+        foreach (static::$_DEFAULT_OPTIONS as $option => $value){
+            $this->setOption($option, $value);
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function setURL($url) {
+    public function setURL($url){
         $this->url = $url;
-        $this->setOption(CURLOPT_URL,$this->url);
+        $this->setOption(CURLOPT_URL, $this->url);
         return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public function getURL() {
+    public function getURL(){
         return $this->url;
     }
 
     /**
      * @inheritdoc
      */
-    public function addHeader($name, $value) {
+    public function addHeader($name, $value){
         $token = $name.": ".$value;
         $this->headers[] = $token;
         return $this;
@@ -114,9 +114,9 @@ abstract class AbstractRequest implements RequestInterface{
     /**
      * @inheritdoc
      */
-    public function setHeaders(array $array = array()) {
-        if (count($array)>0) {
-            foreach ($array as $key => $value) {
+    public function setHeaders(array $array = array()){
+        if (count($array)>0){
+            foreach ($array as $key => $value){
                 $this->addHeader($key, $value);
             }
         }
@@ -127,14 +127,14 @@ abstract class AbstractRequest implements RequestInterface{
     /**
      * @inheritdoc
      */
-    public function getHeaders() {
+    public function getHeaders(){
         return $this->headers;
     }
 
     /**
      * @inheritdoc
      */
-    public function setBody($body) {
+    public function setBody($body){
         $this->body = $body;
         $this->setOption(CURLOPT_POSTFIELDS, $this->body);
         return $this;
@@ -143,28 +143,28 @@ abstract class AbstractRequest implements RequestInterface{
     /**
      * @inheritdoc
      */
-    public function getBody() {
+    public function getBody(){
         return $this->body;
     }
 
     /**
      * @inheritdoc
      */
-    public function getCurlObject() {
+    public function getCurlObject(){
         return $this->CurlRequest;
     }
 
     /**
      * @inheritdoc
      */
-    public function setOption($option, $value) {
+    public function setOption($option, $value){
         curl_setopt($this->CurlRequest, $option, $value);
     }
 
     /**
      * @inheritdoc
      */
-    public function send() {
+    public function send(){
         $this->setHeaders();
         $this->CurlResponse = curl_exec($this->CurlRequest);
         $this->status = self::STATUS_SENT;
@@ -199,7 +199,7 @@ abstract class AbstractRequest implements RequestInterface{
     /**
      * @inheritdoc
      */
-    public function start() {
+    public function start(){
         $this->CurlRequest = curl_init();
         $this->status = self::STATUS_INIT;
         return $this;
@@ -218,7 +218,7 @@ abstract class AbstractRequest implements RequestInterface{
     /**
      * @inheritdoc
      */
-    public function getCurlStatus() {
+    public function getCurlStatus(){
         return $this->status;
     }
 }

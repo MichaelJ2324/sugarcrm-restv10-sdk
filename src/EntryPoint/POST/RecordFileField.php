@@ -32,23 +32,23 @@ class RecordFileField extends POSTFileEntryPoint {
                 $fileField => $data
             );
         }
-        if (is_array($data)) {
-            if (isset($fileField)) {
+        if (is_array($data)){
+            if (isset($fileField)){
                 $data[$fileField] = $this->setFileFieldValue($data[$fileField]);
-            }else {
-                foreach ($data as $key => $value) {
-                    if (strtolower($key) !== 'oauth_token' || strtolower($key) !== 'delete_if_fails' || strtolower($key) !== 'format') {
+            }else{
+                foreach ($data as $key => $value){
+                    if (strtolower($key)!=='oauth_token' || strtolower($key)!=='delete_if_fails' || strtolower($key)!=='format'){
                         $data[$key] = $this->setFileFieldValue($value);
                     }
                 }
             }
             $data['oauth_token'] = $this->accessToken;
-            $data['delete_if_fails'] = (isset($data['delete_if_fails']) ? $data['delete_if_fails'] : TRUE);
+            $data['delete_if_fails'] = (isset($data['delete_if_fails'])?$data['delete_if_fails']:TRUE);
             $data['format'] = 'sugar-html-json';
-        }elseif (is_object($data) && isset($fileField)){
+        } elseif (is_object($data) && isset($fileField)){
             $data->$fileField = $this->setFileFieldValue($data->$fileField);
             $data->oauth_token = $this->accessToken;
-            $data->delete_if_fails = (isset($data->delete_if_fails) ? $data->delete_if_fails : TRUE);
+            $data->delete_if_fails = (isset($data->delete_if_fails)?$data->delete_if_fails:TRUE);
             $data->format = 'sugar-html-json';
         }
         return $data;
@@ -60,8 +60,8 @@ class RecordFileField extends POSTFileEntryPoint {
      * @return string
      */
     protected function setFileFieldValue($value){
-        if (strpos($value, '@') === FALSE) {
-            $value = '@' . $value;
+        if (strpos($value, '@')===FALSE){
+            $value = '@'.$value;
         }
         return $value;
     }

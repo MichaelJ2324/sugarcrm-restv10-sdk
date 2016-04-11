@@ -1,16 +1,16 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 try{
-    $SugarAPI = new \SugarAPI\SDK\SugarAPI('instances.this/Ent/7700/',array('username' => 'admin','password'=>'asdf'));
+    $SugarAPI = new \SugarAPI\SDK\SugarAPI('instances.this/Ent/7700/', array('username' => 'admin', 'password'=>'asdf'));
     $SugarAPI->login();
     $EP = $SugarAPI->createRecord('Notes')->data(array('name' => 'Test Note'))->execute();
     $response = $EP->getResponse();
     if ($response->getStatus()=='200'){
         $record = $response->getBody();
 
-        $upload = $SugarAPI->attachFile('Notes',$record->id,'filename')->data(__DIR__.'/testfile.txt;filename=testfile.txt')->execute();
+        $upload = $SugarAPI->attachFile('Notes', $record->id, 'filename')->data(__DIR__.'/testfile.txt;filename=testfile.txt')->execute();
         $response = $upload->getResponse();
         if ($response->getStatus()=='200'){
             $record = $response->getBody();
@@ -27,6 +27,6 @@ try{
         print_r($response->getBody());
     }
 
-}catch(\SugarAPI\SDK\Exception\SDKException $ex){
+}catch (\SugarAPI\SDK\Exception\SDKException $ex){
     print $ex->getMessage();
 }
