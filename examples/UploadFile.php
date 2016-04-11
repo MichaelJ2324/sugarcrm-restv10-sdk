@@ -10,9 +10,7 @@ try{
     if ($response->getStatus()=='200'){
         $record = $response->getBody();
 
-        $upload = $SugarAPI->attachFile('Notes',$record->id,'filename')->data(array(
-            'filename' => __DIR__.'/testfile.txt;filename=testfile.txt'
-        ))->execute();
+        $upload = $SugarAPI->attachFile('Notes',$record->id,'filename')->data(__DIR__.'/testfile.txt;filename=testfile.txt')->execute();
         $response = $upload->getResponse();
         if ($response->getStatus()=='200'){
             $record = $response->getBody();

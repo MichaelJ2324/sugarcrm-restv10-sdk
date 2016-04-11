@@ -23,10 +23,8 @@ try{
         if ($response->getStatus()=='200'){
             echo "Retrieved Record <br>";
             $randomRecord = $getRecord->getResponse()->getBody();
-
-            $updateRecord = $SugarAPI->updateRecord('Accounts',$randomRecord->id)->data(array(
-                'name' => 'Updated Record Name'
-            ))->execute();
+            $randomRecord->name = 'Updated Record Name';
+            $updateRecord = $SugarAPI->updateRecord('Accounts',$randomRecord->id)->data($randomRecord)->execute();
             $response = $updateRecord->getResponse();
             if ($response->getStatus()=='200'){
                 $randomRecord = $updateRecord->getResponse()->getBody();

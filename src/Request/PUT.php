@@ -32,7 +32,7 @@ class PUT extends AbstractRequest{
      * JSON Encode Body
      * @inheritdoc
      */
-    public function setBody(array $body) {
+    public function setBody($body) {
         return parent::setBody(json_encode($body));
     }
 

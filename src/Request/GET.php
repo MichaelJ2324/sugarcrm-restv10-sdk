@@ -23,7 +23,7 @@ class GET extends AbstractRequest {
      *
      * Convert Body to Query String
      */
-    public function setBody(array $body){
+    public function setBody($body){
         $this->body = http_build_query($body);
         return $this;
     }

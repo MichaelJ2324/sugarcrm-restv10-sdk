@@ -17,9 +17,18 @@ class Oauth2Token extends POSTEntryPoint {
         'platform'
     );
 
-    public function data(array $data){
-        $data['grant_type'] = 'password';
-        return parent::data($data);
+    /**
+     * Configure the Grant Type to be Password
+     * @param mixed $data
+     * @return array|mixed
+     */
+    protected function configureData($data) {
+        if (is_array($data)){
+            $data['grant_type'] = 'password';
+        }elseif (is_object($data)){
+            $data->grant_type = 'password';
+        }
+        return $data;
     }
 
 

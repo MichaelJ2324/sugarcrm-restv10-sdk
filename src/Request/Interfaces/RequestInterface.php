@@ -6,10 +6,10 @@ interface RequestInterface {
 
     /**
      * Set the Body to Request
-     * @param array
+     * @param mixed
      * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object
      */
-    public function setBody(array $array);
+    public function setBody($array);
 
     /**
      * Get the Body on the request

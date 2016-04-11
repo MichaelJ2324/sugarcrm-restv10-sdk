@@ -120,10 +120,20 @@ abstract class AbstractEntryPoint implements EPInterface {
     /**
      * @inheritdoc
      */
-    public function data(array $data){
+    public function data($data){
+        $data = $this->configureData($data);
         $this->Data = $data;
         $this->Request->setBody($this->Data);
         return $this;
+    }
+
+    /**
+     * Override function for configuring Default Values on some EntryPoints to allow for short hand
+     * @param mixed $data
+     * @return mixed
+     */
+    protected function configureData($data){
+        return $data;
     }
 
     /**

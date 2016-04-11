@@ -16,7 +16,7 @@ class POSTFile extends POST {
      * Overrides POST setBody, so that Body is not json encoded
      * @inheritdoc
      */
-    public function setBody(array $body) {
+    public function setBody($body) {
         $this->body = $body;
         $this->setOption(CURLOPT_POSTFIELDS,$this->body);
         return $this;

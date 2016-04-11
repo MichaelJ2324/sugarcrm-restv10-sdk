@@ -20,10 +20,10 @@ interface EPInterface {
 
     /**
      * The data/payload that will be use by the EntryPoint to be submitted to the API
-     * @param array
+     * @param mixed
      * @return \SugarAPI\SDK\EntryPoint\Interfaces\EPInterface
      */
-    public function data(array $data);
+    public function data($data);
 
     /**
      * Check if Authentication is needed
