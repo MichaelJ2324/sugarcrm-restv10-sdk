@@ -23,7 +23,7 @@ interface RequestInterface {
      * @param string - Header Value
      * @return \SugarAPI\SDK\Request\Interfaces\RequestInterface
      */
-    public function addHeader($name,$value);
+    public function addHeader($name, $value);
 
     /**
      * Sets the Headers on the Curl Request object, called during Sending. Appends to Request Headers property
@@ -50,7 +50,7 @@ interface RequestInterface {
      * @param mixed $value - Curl Option Value
      * @return \SugarAPI\SDK\Request\Interfaces\RequestInterface
      */
-    public function setOption($option,$value);
+    public function setOption($option, $value);
 
     /**
      * Set the URL on the Request Object

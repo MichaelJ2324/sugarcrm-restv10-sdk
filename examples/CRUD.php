@@ -11,7 +11,7 @@ try{
     if ($response->getStatus()=='200'){
         $recordList = $response->getBody();
         $max=count($recordList->records);
-        echo "Found $max records from Filter Records request. <br>";
+        echo "found $max records from Filter Records request. <br>";
         $number = rand(0,$max);
         $randomRecord = $recordList->records[$number];
         echo "Choose random record #$number, with ID: ".$randomRecord->id." <br>";
@@ -24,14 +24,14 @@ try{
             echo "Retrieved Record <br>";
             $randomRecord = $getRecord->getResponse()->getBody();
             $randomRecord->name = 'Updated Record Name';
-            $updateRecord = $SugarAPI->updateRecord('Accounts',$randomRecord->id)->data($randomRecord)->execute();
+            $updateRecord = $SugarAPI->updateRecord('Accounts', $randomRecord->id)->data($randomRecord)->execute();
             $response = $updateRecord->getResponse();
             if ($response->getStatus()=='200'){
                 $randomRecord = $updateRecord->getResponse()->getBody();
                 echo "Updated Record <br>";
                 print_r($randomRecord);
 
-                $deleteRecord = $SugarAPI->deleteRecord('Accounts',$randomRecord->id)->execute();
+                $deleteRecord = $SugarAPI->deleteRecord('Accounts', $randomRecord->id)->execute();
                 $response = $deleteRecord->getResponse();
                 if ($response->getStatus()=='200'){
                     $response = $deleteRecord->getResponse()->getBody();
@@ -57,11 +57,11 @@ try{
         echo "Response: ".$response->getStatus();
         print_r($response->getBody());
     }
-}catch(\SugarAPI\SDK\Exception\AuthenticationException $ex){
+}catch (\SugarAPI\SDK\Exception\AuthenticationException $ex){
     echo "Auth Options:<pre>";
     print_r($SugarAPI->getAuthOptions());
     echo "</pre> Error Message: ";
     print $ex->getMessage();
-}catch(\SugarAPI\SDK\Exception\SDKException $ex){
+}catch (\SugarAPI\SDK\Exception\SDKException $ex){
     echo $ex->__toString();
 }

@@ -19,7 +19,7 @@ class RefreshToken extends POSTEntryPoint {
      * @param mixed $data
      * @return array|mixed
      */
-    protected function configureData($data) {
+    protected function configureData($data){
         if (is_array($data)){
             $data['grant_type'] = 'refresh_token';
         }elseif (is_object($data)){
