@@ -9,21 +9,58 @@ class SugarAPI {
 
     const API_URL = '/rest/v10/';
 
+    /**
+     * Default Settings for SugarAPI Object.
+     * Includes Default Instance, and Default Authentication Ooptions
+     * Example:
+     *      array(
+     *          'instance' => 'localhost',
+     *          'auth' => array(
+     *              'username' => 'admin',
+     *              'password' => 'password',
+     *              'client_id' => 'custom_client',
+     *              'client_secret' => 's3cr3t',
+     *              'platform' => 'custom_app'
+     *          )
+     *      );
+     * @var array
+     */
     protected static $_DEFAULTS = array();
 
+    /**
+     * The configured instance
+     * @var
+     */
     protected $instance;
+
+    /**
+     * The configured Rest v10 URL
+     * @var
+     */
     protected $url;
 
+    /**
+     * The configured Authentication options
+     * @var array
+     */
     protected $authOptions = array(
-        'grant_type' => 'password',
         'username' => '',
         'password' => '',
         'client_id' => '',
         'client_secret' => '',
         'platform' => ''
     );
+
+    /**
+     * The authentication token, after successful login to SugarAPI
+     * @var
+     */
     protected $authToken;
 
+    /**
+     * The list of registered EntryPoints
+     * @var array
+     */
     private $entryPoints = array();
 
     public function __construct($instance = '', array $authOptions = array()){
@@ -37,19 +74,28 @@ class SugarAPI {
         $this->registerSDKEntryPoints();
     }
 
+    /**
+     * Configure the static property $_DEFAULTS with settings from defaults.php
+     */
     protected function loadDefaults(){
-        include __DIR__.DIRECTORY_SEPARATOR.'defaults.php';
-        if (isset($defaults)){
-            static::$_DEFAULTS = $defaults;
-            if (isset($defaults['instance'])){
-                $this->setInstance($defaults['instance']);
+        if (empty(static::$_DEFAULTS)) {
+            include __DIR__ . DIRECTORY_SEPARATOR . 'defaults.php';
+            if (isset($defaults)) {
+                static::$_DEFAULTS = $defaults;
             }
-            if (isset($defaults['auth']) && is_array($defaults['auth'])){
-                $this->setAuthOptions($defaults['auth']);
-            }
+        }
+        if (isset(static::$_DEFAULTS['instance'])){
+            $this->setInstance(static::$_DEFAULTS['instance']);
+        }
+        if (isset(static::$_DEFAULTS['auth']) && is_array(static::$_DEFAULTS['auth'])){
+            $this->setAuthOptions(static::$_DEFAULTS['auth']);
         }
     }
 
+    /**
+     * Configure the Authentication Options being used by SugarAPI Object
+     * @param array $options
+     */
     public function setAuthOptions(array $options){
         foreach ($this->authOptions as $key => $value){
             if (isset($options[$key])){
@@ -58,6 +104,10 @@ class SugarAPI {
         }
     }
 
+    /**
+     * Register the defined EntryPoints in SDK, located in src/EntryPoint/registry.php file
+     * @throws SDKException
+     */
     protected function registerSDKEntryPoints(){
         require __DIR__.DIRECTORY_SEPARATOR.'EntryPoint'.DIRECTORY_SEPARATOR.'registry.php';
         foreach ($entryPoints as $funcName => $className){
@@ -66,6 +116,13 @@ class SugarAPI {
         }
     }
 
+    /**
+     * Register an EntryPoint method on the SugarAPI object.
+     * Allows for loading custom EntryPoints, so long as custom EntryPoints are autoloaded accordingly
+     * @param $funcName - name of Method to be called on SugarAPI Object
+     * @param $className - full name of EntryPoint Class that will be utilized
+     * @throws SDKException
+     */
     public function registerEntryPoint($funcName, $className){
         if (isset($this->entryPoints[$funcName])){
             throw new SDKException('SDK method already defined. Method '.$funcName.' references Class '.$className);
@@ -73,6 +130,14 @@ class SugarAPI {
         $this->entryPoints[$funcName] = $className;
     }
 
+    /**
+     * Generates the EntryPoint objects based on the Method name that was called
+     * @param $name
+     * @param $params
+     * @return mixed
+     * @throws AuthenticationException
+     * @throws SDKException
+     */
     public function __call($name, $params){
         if (array_key_exists($name, $this->entryPoints)){
             $Class = $this->entryPoints[$name];
@@ -82,7 +147,7 @@ class SugarAPI {
                 if (isset($this->authToken)){
                     $EntryPoint->configureAuth($this->authToken->access_token);
                 }else{
-                    throw new AuthenticationException('no_auth');
+                    throw new AuthenticationException('Authentication is required for EntryPoint ['.$name.'].');
                 }
             }
             return $EntryPoint;
@@ -90,6 +155,11 @@ class SugarAPI {
             throw new SDKException('Method '.$name.', is not a registered method of the SugarAPI SDK');
         }
     }
+
+    /**
+     * Login to the configured SugarCRM instance, and stored the Auth Token
+     * @throws AuthenticationException
+     */
     public function login(){
         if (empty($this->authOptions['username']) || empty($this->authOptions['password'])){
             throw new AuthenticationException("Username or Password was not provided.");
@@ -102,10 +172,12 @@ class SugarAPI {
             throw new AuthenticationException($response->getBody());
         }
     }
+
+    /**
+     * Configure the instance that the SugarAPI object will be communicating with
+     * @param $instance
+     */
     public function setInstance($instance){
-        if (strpos("https", $instance)!==FALSE){
-            $this->secure = TRUE;
-        }
         if (strpos("http", $instance)===FALSE){
             $instance = "http://".$instance;
         }
@@ -115,12 +187,27 @@ class SugarAPI {
         $this->instance = $instance;
         $this->url = rtrim($this->instance, "/").self::API_URL;
     }
+
+    /**
+     * Get the configured Rest v10 URL
+     * @return mixed
+     */
     public function getURL(){
         return $this->url;
     }
+
+    /**
+     * Get the Authentication Token
+     * @return mixed
+     */
     public function getToken(){
         return $this->authToken;
     }
+
+    /**
+     * Get the configured Authentication Options
+     * @return array
+     */
     public function getAuthOptions(){
         return $this->authOptions;
     }
