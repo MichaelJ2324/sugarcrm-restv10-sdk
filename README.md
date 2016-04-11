@@ -49,8 +49,8 @@ See examples directory for a few examples of manipulating data with the SDK, oth
     $SugarAPI->login();
     $SugarAPI->getRecord($module,$recordID)->execute();
  </pre>
+- List Module Records, and Filter Records using the Filter API
  - \<module\>/filter - POST
-  - List Module Records, and Filter Records using the Filter API
  <pre>
     $SugarAPI = new \SugarAPI\SDK\SugarAPI();
     $SugarAPI->login();
@@ -91,7 +91,7 @@ See examples directory for a few examples of manipulating data with the SDK, oth
  <pre>
      $SugarAPI = new \SugarAPI\SDK\SugarAPI();
      $SugarAPI->login();
-     $SugarAPI->attachFile('Notes',$recordID,'filename')->data(array('filename' => '/path/to/file'))->execute();
+     $SugarAPI->attachFile('Notes',$recordID,'filename')->data('/path/to/file')->execute();
  </pre>
 - Get Files from records, such as Note Records
  - \<module\>/:record/file/:field - GET
@@ -99,6 +99,13 @@ See examples directory for a few examples of manipulating data with the SDK, oth
     $SugarAPI = new \SugarAPI\SDK\SugarAPI();
     $SugarAPI->login();
     $SugarAPI->getAttachment('Notes',$recordID,'filename')->execute();
+ </pre>
+- Delete Files from records, such as Note Records
+ - \<module\>/:record/file/:field - GET
+ <pre>
+    $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+    $SugarAPI->login();
+    $SugarAPI->deleteFile('Notes',$recordID,'filename')->execute();
  </pre>
  
 ###Other Methods
@@ -108,6 +115,20 @@ See examples directory for a few examples of manipulating data with the SDK, oth
      $SugarAPI = new \SugarAPI\SDK\SugarAPI();
      $SugarAPI->login();
      $SugarAPI->favorite($module,$recordID)->execute();
+ </pre>
+- UnFavorite Records
+ - \<module\>/:record/favorite - DELETE
+ <pre>
+     $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+     $SugarAPI->login();
+     $SugarAPI->unfavorite($module,$recordID)->execute();
+ </pre>
+- Ping
+ - ping - GET
+ <pre>
+     $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+     $SugarAPI->login();
+     $SugarAPI->ping()->execute();
  </pre>
 
 

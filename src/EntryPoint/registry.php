@@ -19,5 +19,7 @@ $entryPoints = array(
     'favorite' => 'PUT\\FavoriteRecord',
 
     //DELETE API EntryPoints
-    'deleteRecord' => 'DELETE\\DeleteRecord'
+    'deleteRecord' => 'DELETE\\DeleteRecord',
+    'unfavorite' => 'DELETE\\FavoriteRecord',
+    'deleteFile' => 'DELETE\\RecordFileField'
 );
