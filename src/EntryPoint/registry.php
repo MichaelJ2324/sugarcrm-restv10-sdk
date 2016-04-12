@@ -7,11 +7,12 @@ $entryPoints = array(
     'getAttachment' => 'GET\\RecordFileField',
 
     //POST API EntryPoints
-    'accessToken' => 'POST\\Oauth2Token',
-    'refreshToken' => 'POST\\RefreshToken',
+    'oauth2Token' => 'POST\\Oauth2Token',
+    'oauth2refresh' => 'POST\\RefreshToken',
     'createRecord' => 'POST\\CreateRecord',
     'filterRecords' => 'POST\\FilterRecords',
     'attachFile' => 'POST\\RecordFileField',
+    'oauth2Logout' => 'POST\\OAuth2Logout',
     //TODO: 'relateRecords' => 'POST\\RelateRecords',
 
     //PUT API EntryPoints

@@ -58,6 +58,12 @@ class SugarAPI {
     protected $authToken;
 
     /**
+     * The time in which Auth Token expires, and needs to be refreshed
+     * @var
+     */
+    protected $authExpiration;
+
+    /**
      * The list of registered EntryPoints
      * @var array
      */
@@ -145,6 +151,9 @@ class SugarAPI {
 
             if ($EntryPoint->authRequired()){
                 if (isset($this->authToken)){
+                    if ($this->authExpired()){
+                        $this->refreshAuth();
+                    }
                     $EntryPoint->configureAuth($this->authToken->access_token);
                 }else{
                     throw new AuthenticationException('Authentication is required for EntryPoint ['.$name.'].');
@@ -164,13 +173,59 @@ class SugarAPI {
         if (empty($this->authOptions['username']) || empty($this->authOptions['password'])){
             throw new AuthenticationException("Username or Password was not provided.");
         }
-        $EP = $this->accessToken();
-        $response = $EP->data($this->authOptions)->execute()->getResponse();
+        $response = $this->oauth2Token()->data($this->authOptions)->execute()->getResponse();
         if ($response->getStatus()=='200'){
-            $this->authToken = $response->getBody();
+            $this->setAuthToken($response->getBody());
         } else{
             throw new AuthenticationException($response->getBody());
         }
+    }
+
+    /**
+     * Set the current AuthToken and Auth Expiration properties
+     * @param stdObject $token
+     */
+    protected function setAuthToken($token){
+        $this->authToken = $token;
+        $this->authExpiration = time()+$token->expires_in;
+    }
+
+    /**
+     * Refresh Auth Token to further API use
+     */
+    public function refreshAuth(){
+        $refreshOptions = array(
+            'client_id' => $this->authOptions->client_id,
+            'client_secret' => $this->authOptions->client_secret,
+            'refresh_token' => $this->authOptions->refresh_token
+        );
+        $response = $this->oauth2Refresh()->data($refreshOptions)->execute()->getResponse();
+        if ($response->getStatus()=='200'){
+            $this->setAuthToken($response->getBody());
+        } else{
+            throw new AuthenticationException($response->getBody());
+        }
+    }
+
+    /**
+     * Check if current access token is expired
+     * @return bool
+     */
+    public function authExpired(){
+        return time() >= $this->authExpiration;
+    }
+
+    /**
+     * Force Logout of SugarAPI Object
+     */
+    public function logout(){
+       if (!empty($this->authToken)){
+           $response = $this->oauth2Logout()->execute()->getResponse();
+           if ($response->getStatus()=='200'){
+               unset($this->authToken);
+               unset($this->authExpiration);
+           }
+       }
     }
 
     /**

@@ -2,10 +2,7 @@
 
 namespace SugarAPI\SDK\EntryPoint\POST;
 
-
-use SugarAPI\SDK\EntryPoint\Abstracts\POST\JSONEntryPoint as POSTEntryPoint;
-
-class RefreshToken extends POSTEntryPoint {
+class RefreshToken extends Oauth2Token {
 
     protected $_REQUIRED_DATA = array(
         'grant_type',
