@@ -4,9 +4,11 @@ namespace SugarAPI\SDK\EntryPoint\Abstracts;
 
 
 use SugarAPI\SDK\EntryPoint\Interfaces\EPInterface;
-use SugarAPI\SDK\Exception\EntryPointException;
-use SugarAPI\SDK\Request\POST;
-use SugarAPI\SDK\Response\JSON as JSONResponse;
+use SugarAPI\SDK\Exception\EntryPoint\InvalidURLException;
+use SugarAPI\SDK\Exception\EntryPoint\RequiredDataException;
+use SugarAPI\SDK\Exception\EntryPoint\RequiredOptionsException;
+use SugarAPI\SDK\Response\Interfaces\ResponseInterface;
+use SugarAPI\SDK\Request\Interfaces\RequestInterface;
 
 abstract class AbstractEntryPoint implements EPInterface {
 
@@ -15,12 +17,6 @@ abstract class AbstractEntryPoint implements EPInterface {
      * @var bool
      */
     protected $_AUTH_REQUIRED = true;
-
-    /**
-     * The default Module for the EntryPoint
-     * @var string
-     */
-    protected $_MODULE;
 
     /**
      * The URL for the EntryPoint
@@ -40,13 +36,25 @@ abstract class AbstractEntryPoint implements EPInterface {
      * An array of Required Data properties that should be passed in the Request
      * @var array
      */
-    protected $_REQUIRED_DATA;
+    protected $_REQUIRED_DATA = array();
+
+    /**
+     * The required type of Data to be given to the EntryPoint. If none, different types can be passed in.
+     * @var string
+     */
+    protected $_DATA_TYPE;
 
     /**
      * The configured URL for the EntryPoint
      * @var string
      */
-    protected $url;
+    protected $Url;
+
+    /**
+     * The initial URL passed into the EntryPoint
+     * @var
+     */
+    protected $baseUrl;
 
     /**
      * The configured Module for the EntryPoint
@@ -85,68 +93,36 @@ abstract class AbstractEntryPoint implements EPInterface {
      */
     protected $accessToken;
 
+
     public function __construct($url,$options = array()){
-        $this->url = $url;
-        $this->Module = $this->_MODULE;
+        $this->baseUrl = $url;
 
         if (!empty($options)) {
-            if (empty($this->Module)) {
-                if (strpos($this->_URL, '$module') !== FALSE) {
-                    $this->module($options[0]);
-                    array_shift($options);
-                }
-            }
-            $this->options($options);
-        }
-        $this->setupRequest();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function module($module){
-        $this->Module = $module;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function options(array $options){
-        $this->Options = $options;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function data($data){
-        $data = $this->configureData($data);
-        $this->Data = $data;
-        $this->Request->setBody($this->Data);
-        return $this;
-    }
-
-    /**
-     * Override function for configuring Default Values on some EntryPoints to allow for short hand
-     * @param mixed $data
-     * @return mixed
-     */
-    protected function configureData($data){
-        return $data;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function execute(){
-        if ($this->verifyURL() && $this->validateData()) {
+            $this->setOptions($options);
+        }elseif(!$this->requiresOptions()){
             $this->configureURL();
-            $this->Request->setURL($this->url);
-            $this->Request->send();
-            $this->setupResponse();
-            //Trying to manage memory by closing Curl Resource
-            $this->Request->close();
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setOptions(array $options){
+        $this->Options = $options;
+        if ($this->verifyOptions()){
+            $this->configureURL();
+        }
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     * @throws RequiredDataException - When passed in data contains issues
+     */
+    public function setData($data){
+        $this->Data = $data;
+        if ($this->verifyData()) {
+            $this->Request->setBody($data);
         }
         return $this;
     }
@@ -154,18 +130,39 @@ abstract class AbstractEntryPoint implements EPInterface {
     /**
      * @inheritdoc
      */
-    public function authRequired() {
-        return $this->_AUTH_REQUIRED;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function configureAuth($accessToken) {
+    public function setAuth($accessToken) {
         if ($this->authRequired()){
             $this->accessToken = $accessToken;
             $this->Request->addHeader('OAuth-Token', $accessToken);
         }
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     * @throws InvalidURLException - When passed in URL contains $variables
+     */
+    public function setUrl($url) {
+        $this->Url = $url;
+        if ($this->verifyUrl()) {
+            $this->Request->setURL($this->Url);
+        }
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setRequest(RequestInterface $Request) {
+        $this->Request = $Request;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setResponse(ResponseInterface $Response) {
+        $this->Response = $Response;
         return $this;
     }
 
@@ -186,8 +183,8 @@ abstract class AbstractEntryPoint implements EPInterface {
     /**
      * @inheritdoc
      */
-    public function getURL(){
-        return $this->url;
+    public function getUrl(){
+        return $this->Url;
     }
 
     /**
@@ -205,101 +202,120 @@ abstract class AbstractEntryPoint implements EPInterface {
     }
 
     /**
+     * @inheritdoc
+     */
+    public function execute($data = null){
+        if ($data!==null){
+            $this->configureData($data);
+        }
+        $this->Request->send();
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function authRequired() {
+        return $this->_AUTH_REQUIRED;
+    }
+
+    /**
+     * Override function for configuring Default Values on some EntryPoints to allow for short hand
+     */
+    protected function configureData($data){
+        if (!empty($this->_REQUIRED_DATA)&&is_array($data)){
+            foreach($this->_REQUIRED_DATA as $property => $value){
+                if (!isset($data[$property])){
+                    $data[$property] = $value;
+                }
+            }
+        }
+        $this->setData($data);
+    }
+
+    /**
      * Configures the URL, by updating any variable placeholders in the URL property on the EntryPoint
      * - Replaces $module with $this->Module
      * - Replaces all other variables starting with $, with options in the order they were given
      */
     protected function configureURL(){
         $url = $this->_URL;
-        if (strpos($this->_URL,"$")!==FALSE) {
-            if (count($this->Options) > 0 || !empty($this->Module)) {
-                $urlParts = explode("/", $this->_URL);
-                $o = 0;
-                foreach ($urlParts as $key => $part) {
-                    if (strpos($part, '$module') !== FALSE) {
-                        if (isset($this->Module)) {
-                            $urlParts[$key] = $this->Module;
-                            continue;
-                        } else {
-                            if (isset($this->Options[$o])) {
-                                $this->Module = $this->Options[$o];
-                                array_shift($this->Options);
-                            }
-                        }
-                    }
-                    if (strpos($part, "$") !== FALSE) {
-                        if (isset($this->Options[$o])) {
-                            $urlParts[$key] = $this->Options[$o];
-                            $o++;
-                        }
+        if ($this->requiresOptions()) {
+            $urlParts = explode("/", $this->_URL);
+            $o = 0;
+            foreach ($urlParts as $key => $part) {
+                if (strpos($part, "$") !== FALSE) {
+                    if (isset($this->Options[$o])) {
+                        $urlParts[$key] = $this->Options[$o];
+                        $o++;
                     }
                 }
-                $url = implode($urlParts,"/");
             }
+            $url = implode($urlParts,"/");
         }
-        $this->url = $this->url.$url;
+        $url = $this->baseUrl.$url;
+        $this->setUrl($url);
     }
 
     /**
-     * Setup the Request Object property, setup on initial Construct of EntryPoint
+     * Verify if URL is configured properly
+     * @return bool
+     * @throws InvalidURLException
      */
-    protected function setupRequest(){
-        $this->Request = new POST();
-    }
-
-    /**
-     * Setup the Response Object Property, not called until after Request Execution
-     */
-    protected function setupResponse(){
-        $this->Response = new JSONResponse($this->Request->getResponse(),$this->Request->getCurlObject());
+    protected function verifyUrl(){
+        $UrlArray = explode("?",$this->Url);
+        if (strpos($UrlArray[0],"$") !== FALSE){
+            throw new InvalidURLException(get_called_class(),"Configured URL is ".$this->Url);
+        }
+        return true;
     }
 
     /**
      * Verify URL variables have been removed, and that valid number of options were passed.
      * @return bool
-     * @throws EntryPointException
+     * @throws RequiredOptionsException
      */
-    protected function verifyURL(){
+    protected function verifyOptions(){
         $urlVarCount = substr_count($this->_URL,"$");
         $optionCount = 0;
-        if (!empty($this->Module)){
-            $optionCount++;
-        }
         $optionCount += count($this->Options);
         if ($urlVarCount!==$optionCount){
-            if (empty($this->Module) && strpos($this->_URL,'$module')){
-                throw new EntryPointException('Module is required for EntryPoint '.get_called_class());
-            }else{
-                throw new EntryPointException('EntryPoint URL ('.$this->_URL.') requires more parameters than passed.');
-            }
-        }else{
-            return true;
+            throw new RequiredOptionsException(get_called_class(),"URL requires $urlVarCount options.");
         }
+        return true;
     }
 
     /**
      * Validate Required Data for the Request
      * @return bool
-     * @throws EntryPointException
+     * @throws RequiredDataException
      */
-    protected function validateData(){
-        if (empty($this->_REQUIRED_DATA)||count($this->_REQUIRED_DATA)==0){
-            return true;
-        }else{
+    protected function verifyData(){
+        if (isset($this->_DATA_TYPE)||!empty($this->_DATA_TYPE)) {
+            if (gettype($this->Data) !== $this->_DATA_TYPE) {
+                throw new RequiredDataException(get_called_class(),"Valid DataType is {$this->_DATA_TYPE}");
+            }
+        }
+        if (!empty($this->_REQUIRED_DATA)){
             $errors = array();
-            foreach($this->_REQUIRED_DATA as $property){
-                if (isset($this->Data[$property]) || $this->Data[$property]!==null){
-                    continue;
-                }else{
+            foreach($this->_REQUIRED_DATA as $property => $defaultValue){
+                if (!isset($this->Data[$property])){
                     $errors[] = $property;
                 }
             }
             if (count($errors)>0){
-                throw new EntryPointException('EntryPoint requires specific properties in Request data. Missing the following '.implode($errors,","));
-            }else{
-                return true;
+                throw new RequiredDataException(get_called_class(),"Missing data for $errors");
             }
         }
+        return true;
+    }
+
+    /**
+     * Checks if EntryPoint URL contains requires Options
+     * @return bool
+     */
+    protected function requiresOptions(){
+        return strpos($this->_URL,"$") !== FALSE?TRUE:FALSE;
     }
 
 }

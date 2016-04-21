@@ -6,15 +6,15 @@ try{
     $SugarAPI = new \SugarAPI\SDK\SugarAPI('instances.this/Pro/7621/',array('username' => 'admin','password'=>'asdf'));
     $SugarAPI->login();
     $EP = $SugarAPI->createRecord('Accounts');
-    $EP->data(array(
+    $data = array(
         'name' => 'Test Record 4',
         'email1' => 'test4@sugar.com'
-    ));
-    $response = $EP->execute()->getResponse();
+    );
+    $response = $EP->execute($data)->getResponse();
     if ($response->getStatus()=='200'){
-        $record = $response->getBody();
-        $EP2 = $SugarAPI->getRecord('Accounts',$record->id)->data(array('fields' => 'name,email1'));
-        $getResponse = $EP2->execute()->getResponse();
+        $record = $response->getBody(false);
+        $EP2 = $SugarAPI->getRecord('Accounts',$record->id)->execute(array('fields' => 'name,email1'));
+        $getResponse = $EP2->getResponse();
         print $EP2->getUrl();
         print_r($getResponse->getBody());
     }

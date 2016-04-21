@@ -2,28 +2,50 @@
 
 namespace SugarAPI\SDK\EntryPoint\Interfaces;
 
-interface EPInterface {
+use SugarAPI\SDK\Request\Interfaces\RequestInterface;
+use SugarAPI\SDK\Response\Interfaces\ResponseInterface;
 
-    /**
-     * Set the module on the EntryPoint, that will be accessed via API
-     * @param string
-     * @return \SugarAPI\SDK\EntryPoint\Interfaces\EPInterface
-     */
-    public function module($module);
+interface EPInterface {
 
     /**
      * Set the URL options on the EntryPoint, such as Record ID
      * @param array
      * @return \SugarAPI\SDK\EntryPoint\Interfaces\EPInterface
      */
-    public function options(array $options);
+    public function setOptions(array $options);
 
     /**
-     * The data/payload that will be use by the EntryPoint to be submitted to the API
-     * @param mixed
+     * Actually sets the data on the EntryPoint, and on the Request object. Raw data is passed here
+     * @param $data
+     */
+    public function setData($data);
+
+    /**
+     * Set the full URL that the EntryPoint submits data to
+     * @param $url
+     */
+    public function setUrl($url);
+
+    /**
+     * Set the Request Object used by the EntryPoint
+     * @param RequestInterface $Request
+     * @return mixed
+     */
+    public function setRequest(RequestInterface $Request);
+
+    /**
+     * Set the Response Object used by the EntryPoint
+     * @param ResponseInterface $Response
+     * @return mixed
+     */
+    public function setResponse(ResponseInterface $Response);
+
+    /**
+     * Configure OAuth Token on Header
+     * @param string
      * @return \SugarAPI\SDK\EntryPoint\Interfaces\EPInterface
      */
-    public function data($data);
+    public function setAuth($accessToken);
 
     /**
      * Check if Authentication is needed
@@ -32,17 +54,11 @@ interface EPInterface {
     public function authRequired();
 
     /**
-     * Configure OAuth Token on Header
-     * @param string
-     * @return \SugarAPI\SDK\EntryPoint\Interfaces\EPInterface
+     *
+     * @param null $data
+     * @return mixed
      */
-    public function configureAuth($accessToken);
-
-    /**
-     * Execute the EntryPoint Request
-     * @return \SugarAPI\SDK\EntryPoint\Interfaces\EPInterface
-     */
-    public function execute();
+    public function execute($data = null);
 
     /**
      * Get the module that is set on the EntryPoint
@@ -54,7 +70,7 @@ interface EPInterface {
      * Get the full URL being used by the EntryPoint
      * @return string
      */
-    public function getURL();
+    public function getUrl();
 
     /**
      * Get the data URL being used by the EntryPoint

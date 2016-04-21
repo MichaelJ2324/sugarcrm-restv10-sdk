@@ -2,9 +2,9 @@
 
 namespace SugarAPI\SDK\EntryPoint\GET;
 
-use SugarAPI\SDK\EntryPoint\Abstracts\GET\FileEntryPoint as GETFileEntryPoint;
+use SugarAPI\SDK\EntryPoint\Abstracts\GET\AbstractGetFileEntryPoint;
 
-class RecordFileField extends GETFileEntryPoint {
+class ModuleRecordFileField extends AbstractGetFileEntryPoint {
 
     /**
      * @inheritdoc

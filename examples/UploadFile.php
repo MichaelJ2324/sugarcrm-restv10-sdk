@@ -5,12 +5,12 @@ require_once __DIR__.'/../vendor/autoload.php';
 try{
     $SugarAPI = new \SugarAPI\SDK\SugarAPI('instances.this/Ent/7700/', array('username' => 'admin', 'password'=>'asdf'));
     $SugarAPI->login();
-    $EP = $SugarAPI->createRecord('Notes')->data(array('name' => 'Test Note'))->execute();
+    $EP = $SugarAPI->createRecord('Notes')->execute(array('name' => 'Test Note'));
     $response = $EP->getResponse();
     if ($response->getStatus()=='200'){
-        $record = $response->getBody();
+        $record = $response->getBody(false);
 
-        $upload = $SugarAPI->attachFile('Notes', $record->id, 'filename')->data(__DIR__.'/testfile.txt;filename=testfile.txt')->execute();
+        $upload = $SugarAPI->attachFile('Notes', $record->id, 'filename')->execute(__DIR__.'/testfile.txt');
         $response = $upload->getResponse();
         if ($response->getStatus()=='200'){
             $record = $response->getBody();

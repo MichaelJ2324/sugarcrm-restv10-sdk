@@ -25,7 +25,8 @@ abstract class AbstractRequest implements RequestInterface {
         CURLOPT_HEADER => TRUE,
         CURLOPT_SSL_VERIFYPEER => 0,
         CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_FOLLOWLOCATION => 0
+        CURLOPT_FOLLOWLOCATION => 0,
+        CURLOPT_USERAGENT => 'SugarAPI-SDK-PHP'
     );
 
     /**
@@ -183,6 +184,13 @@ abstract class AbstractRequest implements RequestInterface {
      */
     protected function setType(){
         $this->type = static::$_TYPE;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getType(){
+        return $this->type;
     }
 
     /**

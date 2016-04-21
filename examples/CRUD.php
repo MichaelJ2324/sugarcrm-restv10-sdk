@@ -9,25 +9,25 @@ try{
     $EP = $SugarAPI->filterRecords('Accounts');
     $response = $EP->execute()->getResponse();
     if ($response->getStatus()=='200'){
-        $recordList = $response->getBody();
+        $recordList = $response->getBody(false);
         $max=count($recordList->records);
         echo "found $max records from Filter Records request. <br>";
         $number = rand(0,$max);
         $randomRecord = $recordList->records[$number];
         echo "Choose random record #$number, with ID: ".$randomRecord->id." <br>";
 
-        $getRecord = $SugarAPI->getRecord('Accounts',$randomRecord->id)->data(array(
+        $getRecord = $SugarAPI->getRecord('Accounts',$randomRecord->id)->execute(array(
             'fields' => 'name'
-        ))->execute();
+        ));
         $response = $getRecord->getResponse();
         if ($response->getStatus()=='200'){
             echo "Retrieved Record <br>";
-            $randomRecord = $getRecord->getResponse()->getBody();
+            $randomRecord = $getRecord->getResponse()->getBody(false);
             $randomRecord->name = 'Updated Record Name';
-            $updateRecord = $SugarAPI->updateRecord('Accounts', $randomRecord->id)->data($randomRecord)->execute();
+            $updateRecord = $SugarAPI->updateRecord('Accounts', $randomRecord->id)->execute($randomRecord);
             $response = $updateRecord->getResponse();
             if ($response->getStatus()=='200'){
-                $randomRecord = $updateRecord->getResponse()->getBody();
+                $randomRecord = $updateRecord->getResponse()->getBody(false);
                 echo "Updated Record <br>";
                 print_r($randomRecord);
 
@@ -58,8 +58,8 @@ try{
         print_r($response->getBody());
     }
 }catch (\SugarAPI\SDK\Exception\AuthenticationException $ex){
-    echo "Auth Options:<pre>";
-    print_r($SugarAPI->getAuthOptions());
+    echo "Credentails:<pre>";
+    print_r($SugarAPI->getCredentials());
     echo "</pre> Error Message: ";
     print $ex->getMessage();
 }catch (\SugarAPI\SDK\Exception\SDKException $ex){

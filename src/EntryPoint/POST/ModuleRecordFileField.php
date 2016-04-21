@@ -2,30 +2,40 @@
 
 namespace SugarAPI\SDK\EntryPoint\POST;
 
-use SugarAPI\SDK\EntryPoint\Abstracts\POST\FileEntryPoint as POSTFileEntryPoint;
+use SugarAPI\SDK\EntryPoint\Abstracts\POST\AbstractPostFileEntryPoint;
+use SugarAPI\SDK\Exception\EntryPoint\RequiredOptionsException;
 
-class RecordFileField extends POSTFileEntryPoint {
+class ModuleRecordFileField extends AbstractPostFileEntryPoint {
 
+    /**
+     * @inheritdoc
+     */
     protected $_URL = '$module/$record/file/$field';
 
     /**
      * @inheritdoc
      */
+    protected $_DATA_TYPE = 'array';
+
+    /**
+     * @inheritdoc
+     */
     protected $_REQUIRED_DATA = array(
-        'format',
-        'delete_if_fails',
-        'oauth_token'
+        'format' => 'sugar-html-json',
+        'delete_if_fails' => false
     );
 
     /**
      * Allow for shorthand calling of attachFile method.
-     * Users can simply submit the File in via string, or pass the filename => path. Options must be configured before shorthand works completely
-     * @param mixed $data
-     * @return array|mixed
+     * Users can simply submit the File in via string, or pass the filename => path
+     * @param $data
+     * @throws RequiredOptionsException
      */
     protected function configureData($data){
         if (!empty($this->Options)){
             $fileField = end($this->Options);
+        }else{
+            throw new RequiredOptionsException(get_called_class());
         }
         if (is_string($data) && isset($fileField)){
             $data = array(
@@ -36,22 +46,14 @@ class RecordFileField extends POSTFileEntryPoint {
             if (isset($fileField)){
                 $data[$fileField] = $this->setFileFieldValue($data[$fileField]);
             }else{
-                foreach ($data as $key => $value){
-                    if (strtolower($key)!=='oauth_token' || strtolower($key)!=='delete_if_fails' || strtolower($key)!=='format'){
+                foreach ($this->Data as $key => $value){
+                    if (!array_key_exists($key,$this->_REQUIRED_DATA)){
                         $data[$key] = $this->setFileFieldValue($value);
                     }
                 }
             }
-            $data['oauth_token'] = $this->accessToken;
-            $data['delete_if_fails'] = (isset($data['delete_if_fails'])?$data['delete_if_fails']:TRUE);
-            $data['format'] = 'sugar-html-json';
-        } elseif (is_object($data) && isset($fileField)){
-            $data->$fileField = $this->setFileFieldValue($data->$fileField);
-            $data->oauth_token = $this->accessToken;
-            $data->delete_if_fails = (isset($data->delete_if_fails)?$data->delete_if_fails:TRUE);
-            $data->format = 'sugar-html-json';
         }
-        return $data;
+        parent::configureData($data);
     }
 
     /**

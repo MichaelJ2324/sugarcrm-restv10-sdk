@@ -5,6 +5,12 @@ namespace SugarAPI\SDK\Request\Interfaces;
 interface RequestInterface {
 
     /**
+     * Get the HTTP Method of the Request
+     * @return string
+     */
+    public function getType();
+
+    /**
      * Set the Body to Request
      * @param mixed
      * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest Object

@@ -11,7 +11,7 @@ A simple and intuitive Library for accessing a Sugar 7's REST v10 API. Allows fo
 You can easily add the Library to a project, by adding the Package to your composer.json file.
 <pre>
     "require": {
-        "michaelj2324/sugarcrm-restv10-sdk": '>=0.5'
+        "michaelj2324/sugarcrm-restv10-sdk": '>=0.9'
     },
 </pre>
 Otherwise you can pull down the package using
@@ -40,7 +40,7 @@ See examples directory for a few examples of manipulating data with the SDK, oth
  <pre>
     $SugarAPI = new \SugarAPI\SDK\SugarAPI();
     $SugarAPI->login();
-    $SugarAPI->createRecord($module)->data($record)->execute();
+    $SugarAPI->createRecord($module)->execute($record);
  </pre>
 - Read Module Records
  - \<module\>/:record - GET
@@ -54,14 +54,14 @@ See examples directory for a few examples of manipulating data with the SDK, oth
  <pre>
     $SugarAPI = new \SugarAPI\SDK\SugarAPI();
     $SugarAPI->login();
-    $SugarAPI->filterRecords($module)->data($filterParams)->execute();
+    $SugarAPI->filterRecords($module)->execute($filterParams);
   </pre>
 - Update Module Records
  - \<module\>/:record - PUT
  <pre>
     $SugarAPI = new \SugarAPI\SDK\SugarAPI();
     $SugarAPI->login();
-    $SugarAPI->updateRecord($module,$recordID)->data($updatedData)->execute();
+    $SugarAPI->updateRecord($module,$recordID)->execute($updatedData);
  </pre>
 - Delete Module Records
  - \<module\>/:record - DELETE
@@ -76,13 +76,91 @@ See examples directory for a few examples of manipulating data with the SDK, oth
  - oauth2/token - POST
   <pre>
     $SugarAPI = new \SugarAPI\SDK\SugarAPI();
-    $SugarAPI->accessToken()->data($loginParams)->execute();
+    $SugarAPI->oauth2Token()->execute($loginParams);
   </pre>
 - Refresh Token
  - oauth2/token - POST
   <pre>
     $SugarAPI = new \SugarAPI\SDK\SugarAPI();
-    $SugarAPI->refreshToken()->data($loginParams)->execute();
+    $SugarAPI->oauth2Refresh()->data($loginParams)->execute();
+  </pre>
+- Logout
+ - oauth2/logout - POST
+  <pre>
+    $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+    $SugarAPI->oauth2Logout()->data($loginParams)->execute();
+  </pre>
+  
+###User
+- Me
+ - me/ - GET
+ <pre>
+     $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+     $SugarAPI->login();
+     $SugarAPI->me()->execute();
+  </pre>
+  
+###Relationships
+- Create Related
+ - \<module\>/:record/link/:relationship - POST
+ <pre>
+      $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+      $SugarAPI->login();
+      $SugarAPI->createRelated('Account',$recordID,'contacts')->execute($contactRecord);
+  </pre>
+- Filter Related Records
+ - \<module\>/:record/link/:relationship - GET
+ <pre>
+      $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+      $SugarAPI->login();
+      $SugarAPI->filterRelated('Accounts',$recordID,'contacts')->execute($filters);
+  </pre>
+- Get Related Record
+ - \<module\>/:record/link/:relationship/:record_id - GET
+ <pre>
+      $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+      $SugarAPI->login();
+      $SugarAPI->getRelated('Accounts',$recordID,'contacts',$contactId)->execute();
+  </pre>
+- Relate Records
+ - \<module\>/:record/link/:relationship/:record_id - POST
+ <pre>
+      $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+      $SugarAPI->login();
+      $SugarAPI->linkRecords('Accounts',$recordID,'contacts',$contactId)->execute();
+  </pre>
+- Unlink Records
+ - \<module\>/:record/link/:relationship/:record_id - DELETE
+ <pre>
+      $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+      $SugarAPI->login();
+      $SugarAPI->unlinkRecords('Accounts',$recordID,'contacts',$contactId)->execute();
+  </pre>
+  
+###Global Search
+- Search Globally
+ - search - GET
+ <pre>
+      $SugarAPI = new \SugarAPI\SDK\SugarAPI();
+      $SugarAPI->login();
+      $SugarAPI->search()->execute($search);
+  </pre>
+
+###Bulk API
+- bulk - POST
+ <pre>
+      $SugarAPI = new \SugarAPI\SDK\SugarAPI('instances.this/Pro/7700/',array('username' => 'admin','password'=>'asdf'));
+      $SugarAPI->login();
+      $Accounts = $SugarAPI->filterRecords('Accounts')->setData(array('max_num'=> 5));
+      $Contacts = $SugarAPI->filterRecords('Contacts')->setData(array('max_num'=> 1));
+      $Notes = $SugarAPI->filterRecords('Notes')->setData(array('max_num'=> 3));
+      $Leads = $SugarAPI->filterRecords('Leads')->setData(array('max_num'=> 2));
+      $BulkCall = $SugarAPI->bulk()->execute(array(
+          $Accounts,
+          $Contacts,
+          $Notes,
+          $Leads
+      ));
   </pre>
 
 ###File Manipulation
@@ -91,7 +169,7 @@ See examples directory for a few examples of manipulating data with the SDK, oth
  <pre>
      $SugarAPI = new \SugarAPI\SDK\SugarAPI();
      $SugarAPI->login();
-     $SugarAPI->attachFile('Notes',$recordID,'filename')->data('/path/to/file')->execute();
+     $SugarAPI->attachFile('Notes',$recordID,'filename')->execute('/path/to/file');
  </pre>
 - Get Files from records, such as Note Records
  - \<module\>/:record/file/:field - GET
