@@ -15,10 +15,10 @@ class Helpers {
      * @return string
      */
     public static function configureAPIURL($instance){
-        if (strpos("http", $instance)===FALSE){
+        if (strpos($instance,"http")===FALSE){
             $instance = "http://".$instance;
         }
-        if (strpos("rest/v10", $instance)!==FALSE){
+        if (strpos($instance,"rest/v10")!==FALSE){
             $instance = str_replace("rest/v10", "", $instance);
         }
         return rtrim($instance, "/").self::API_URL;
