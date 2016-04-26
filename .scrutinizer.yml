@@ -1,0 +1,66 @@
+checks:
+  php:
+      uppercase_constants: true
+      return_doc_comments: true
+filter:
+  excluded_paths:
+      - tests/*
+      - examples/*
+build:
+    tests:
+        override:
+            -
+                command: 'phpunit --coverage-clover=coverage'
+                coverage:
+                    file: 'coverage'
+                    format: 'php-clover'
+coding_style:
+  php:
+      spaces:
+          around_operators:
+              equality: false
+              relational: false
+              bitwise: false
+              additive: false
+              multiplicative: false
+              shift: false
+          before_left_brace:
+              function: false
+              if: false
+              else: false
+              for: false
+              while: false
+              do: false
+              switch: false
+              try: false
+              catch: false
+              finally: false
+          before_keywords:
+              else: false
+              catch: false
+          ternary_operator:
+              before_condition: false
+              after_condition: false
+              before_alternative: false
+              after_alternative: false
+      braces:
+          classes_functions:
+              class: end-of-line
+              function: end-of-line
+          if:
+              opening: end-of-line
+          for:
+              opening: end-of-line
+          while:
+              opening: end-of-line
+          do_while:
+              opening: end-of-line
+          switch:
+              opening: end-of-line
+          try:
+              opening: end-of-line
+      upper_lower_casing:
+          keywords:
+              general: lower
+          constants:
+              true_false_null: upper

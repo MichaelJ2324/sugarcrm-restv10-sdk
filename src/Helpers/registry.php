@@ -1,4 +1,5 @@
 <?php
+// @codeCoverageIgnoreStart
 
 $entryPoints = array(
     //GET API EntryPoints
@@ -32,3 +33,5 @@ $entryPoints = array(
     'deleteFile' => 'DELETE\\ModuleRecordFileField',
     'unlinkRecords' => 'DELETE\\ModuleRecordLinkRecord'
 );
+
+// @codeCoverageIgnoreEnd

@@ -121,9 +121,8 @@ abstract class AbstractEntryPoint implements EPInterface {
 
         if (!empty($options)) {
             $this->setOptions($options);
-        }elseif(!$this->requiresOptions()){
-            $this->configureURL();
         }
+        $this->configureURL();
     }
 
     /**

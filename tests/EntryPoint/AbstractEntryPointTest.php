@@ -26,7 +26,6 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
     {
     }
 
-    protected $Stub;
     protected $url = 'http://localhost/rest/v10/';
     protected $options = array('foo');
     protected $data = array(
@@ -46,11 +45,11 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
     /**
      * @return EntryPointStub $Stub
      * @covers ::__construct
-     * @group abstractAP
+     * @group abstractEP
      */
     public function testConstructor(){
         $Stub = new EntryPointStub($this->url);
-        $this->assertEquals('',$Stub->getUrl());
+        $this->assertEquals('http://localhost/rest/v10/$test',$Stub->getUrl());
         $this->assertEquals(array(),$Stub->getOptions());
         $this->assertEmpty($Stub->getData());
         $this->assertEmpty($Stub->getRequest());
