@@ -4,7 +4,7 @@ namespace SugarAPI\SDK\Response\Abstracts;
 
 use SugarAPI\SDK\Response\Interfaces\ResponseInterface;
 
-abstract class AbstractResponse implements ResponseInterface{
+abstract class AbstractResponse implements ResponseInterface {
 
     /**
      * Full Curl Response
@@ -36,9 +36,9 @@ abstract class AbstractResponse implements ResponseInterface{
      */
     protected $error;
 
-    public function __construct($curlResponse,$curlRequest){
+    public function __construct($curlResponse, $curlRequest){
         $this->CurlResponse = $curlResponse;
-        if ($this->checkErrors($curlRequest)) {
+        if ($this->checkErrors($curlRequest)){
             $this->extractResponse($curlRequest);
         }
         $this->setStatus($curlRequest);
@@ -49,7 +49,7 @@ abstract class AbstractResponse implements ResponseInterface{
      * @param $curlRequest - Curl resource
      */
     protected function setStatus($curlRequest){
-        $this->status = curl_getinfo($curlRequest,CURLINFO_HTTP_CODE);
+        $this->status = curl_getinfo($curlRequest, CURLINFO_HTTP_CODE);
     }
 
     /**
@@ -57,7 +57,7 @@ abstract class AbstractResponse implements ResponseInterface{
      * @param $curlRequest
      */
     protected function extractResponse($curlRequest){
-        $header_size = curl_getinfo($curlRequest,CURLINFO_HEADER_SIZE);
+        $header_size = curl_getinfo($curlRequest, CURLINFO_HEADER_SIZE);
         $this->headers = substr($this->CurlResponse, 0, $header_size);
         $this->body = substr($this->CurlResponse, $header_size);
     }
@@ -68,11 +68,11 @@ abstract class AbstractResponse implements ResponseInterface{
      * @return bool
      */
     protected function checkErrors($curlRequest){
-        if (curl_errno($curlRequest) !== CURLE_OK) {
+        if (curl_errno($curlRequest)!==CURLE_OK){
             $this->error = curl_error($curlRequest);
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
     /**
@@ -85,14 +85,14 @@ abstract class AbstractResponse implements ResponseInterface{
     /**
      * @inheritdoc
      */
-    public function getBody() {
+    public function getBody(){
         return $this->body;
     }
 
     /**
      * @inheritdoc
      */
-    public function getHeaders() {
+    public function getHeaders(){
         return $this->headers;
     }
 

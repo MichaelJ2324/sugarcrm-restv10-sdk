@@ -22,7 +22,7 @@ class ModuleRecordFileField extends AbstractPostFileEntryPoint {
      */
     protected $_REQUIRED_DATA = array(
         'format' => 'sugar-html-json',
-        'delete_if_fails' => false
+        'delete_if_fails' => FALSE
     );
 
     /**
