@@ -14,7 +14,7 @@ abstract class AbstractDeleteEntryPoint extends AbstractEntryPoint {
         parent::__construct($url, $options);
     }
 
-    public function execute($data = null) {
+    public function execute($data = NULL) {
         parent::execute($data);
         $this->setResponse(new JSON($this->Request->getResponse(),$this->Request->getCurlObject()));
         return $this;

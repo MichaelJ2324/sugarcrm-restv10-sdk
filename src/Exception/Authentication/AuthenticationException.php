@@ -8,8 +8,8 @@ class AuthenticationException extends SDKException {
 
     protected $message = 'Authentication Exception [%s] occurred in SDK Client. Message: %s';
 
-    public function __construct($message) {
-        parent::__construct(sprintf($this->message,get_called_class(),$message));
+    public function __construct($message){
+        parent::__construct(sprintf($this->message, get_called_class(), $message));
     }
 
 }
