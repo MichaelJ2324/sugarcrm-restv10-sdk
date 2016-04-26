@@ -4,12 +4,40 @@ namespace SugarAPI\SDK\EntryPoint\Abstracts;
 
 
 use SugarAPI\SDK\EntryPoint\Interfaces\EPInterface;
+use SugarAPI\SDK\Exception\EntryPoint\InvalidRequestException;
 use SugarAPI\SDK\Exception\EntryPoint\InvalidURLException;
 use SugarAPI\SDK\Exception\EntryPoint\RequiredDataException;
 use SugarAPI\SDK\Exception\EntryPoint\RequiredOptionsException;
 use SugarAPI\SDK\Response\Interfaces\ResponseInterface;
 use SugarAPI\SDK\Request\Interfaces\RequestInterface;
 
+/**
+ * Class AbstractEntryPoint
+ * @package SugarAPI\SDK\EntryPoint\Abstracts
+ * @method EPInterface ping()
+ * @method EPInterface getRecord(string $module = '')
+ * @method EPInterface getAttachment(string $module = '',string $record_id = '')
+ * @method EPInterface getChangeLog(string $module = '',string $record_id = '')
+ * @method EPInterface filterRelated(string $module = '')
+ * @method EPInterface getRelated(string $module = '',string $record_id = '',string $relationship = '',string $related_id = '')
+ * @method EPInterface me()
+ * @method EPInterface search()
+ * @method EPInterface oauth2Token()
+ * @method EPInterface oauth2Refresh()
+ * @method EPInterface createRecord()
+ * @method EPInterface filterRecords()
+ * @method EPInterface attachFile()
+ * @method EPInterface oauth2Logout()
+ * @method EPInterface createRelated()
+ * @method EPInterface linkRecords()
+ * @method EPInterface bulk()
+ * @method EPInterface updateRecord()
+ * @method EPInterface favorite()
+ * @method EPInterface deleteRecord()
+ * @method EPInterface unfavorite()
+ * @method EPInterface deleteFile()
+ * @method EPInterface unlinkRecords()
+ */
 abstract class AbstractEntryPoint implements EPInterface {
 
     /**
@@ -57,12 +85,6 @@ abstract class AbstractEntryPoint implements EPInterface {
     protected $baseUrl;
 
     /**
-     * The configured Module for the EntryPoint
-     * @var string
-     */
-    protected $Module;
-
-    /**
      * The passed in Options for the EntryPoint
      * - If $module variable is used in $_URL static property, then 1st option will be used as Module
      * @var array
@@ -71,19 +93,19 @@ abstract class AbstractEntryPoint implements EPInterface {
 
     /**
      * The data being passed to the API EntryPoint
-     * @var mixed - array or Std Object
+     * @var mixed - array||stdClass
      */
     protected $Data;
 
     /**
      * The Request Object, used by the EntryPoint to submit the data
-     * @var Object
+     * @var RequestInterface
      */
     protected $Request;
 
     /**
      * The Response Object, returned by the Request Object
-     * @var Object
+     * @var ResponseInterface
      */
     protected $Response;
 
@@ -94,8 +116,8 @@ abstract class AbstractEntryPoint implements EPInterface {
     protected $accessToken;
 
 
-    public function __construct($url,$options = array()){
-        $this->baseUrl = $url;
+    public function __construct($baseUrl,array $options = array()){
+        $this->baseUrl = $baseUrl;
 
         if (!empty($options)) {
             $this->setOptions($options);
@@ -109,9 +131,7 @@ abstract class AbstractEntryPoint implements EPInterface {
      */
     public function setOptions(array $options){
         $this->Options = $options;
-        if ($this->verifyOptions()){
-            $this->configureURL();
-        }
+        $this->configureURL();
         return $this;
     }
 
@@ -121,9 +141,6 @@ abstract class AbstractEntryPoint implements EPInterface {
      */
     public function setData($data){
         $this->Data = $data;
-        if ($this->verifyData()) {
-            $this->Request->setBody($data);
-        }
         return $this;
     }
 
@@ -131,22 +148,15 @@ abstract class AbstractEntryPoint implements EPInterface {
      * @inheritdoc
      */
     public function setAuth($accessToken) {
-        if ($this->authRequired()){
-            $this->accessToken = $accessToken;
-            $this->Request->addHeader('OAuth-Token', $accessToken);
-        }
+        $this->accessToken = $accessToken;
         return $this;
     }
 
     /**
      * @inheritdoc
-     * @throws InvalidURLException - When passed in URL contains $variables
      */
     public function setUrl($url) {
         $this->Url = $url;
-        if ($this->verifyUrl()) {
-            $this->Request->setURL($this->Url);
-        }
         return $this;
     }
 
@@ -169,8 +179,8 @@ abstract class AbstractEntryPoint implements EPInterface {
     /**
      * @inheritdoc
      */
-    public function getModule() {
-        return $this->Module;
+    public function getOptions(){
+        return $this->Options;
     }
 
     /**
@@ -203,12 +213,20 @@ abstract class AbstractEntryPoint implements EPInterface {
 
     /**
      * @inheritdoc
+     * @param null $data - short form data for EntryPoint, which is configure by configureData method
+     * @return $this
+     * @throws InvalidRequestException
+     * @throws InvalidURLException
      */
-    public function execute($data = null){
-        if ($data!==null){
-            $this->configureData($data);
+    public function execute($data = NULL){
+        $data =  ($data === NULL?$this->Data:$data);
+        $this->configureData($data);
+        if ($this->verifyOptions() && is_object($this->Request)) {
+            $this->configureRequest();
+            $this->Request->send();
+        }else{
+            throw new InvalidRequestException(get_called_class(),"Request property not configured");
         }
-        $this->Request->send();
         return $this;
     }
 
@@ -220,17 +238,52 @@ abstract class AbstractEntryPoint implements EPInterface {
     }
 
     /**
-     * Override function for configuring Default Values on some EntryPoints to allow for short hand
+     * Verifies URL and Data are setup, then sets them on the Request Object
+     * @throws InvalidURLException
+     * @throws RequiredDataException
+     */
+    protected function configureRequest(){
+        if ($this->verifyUrl()) {
+            $this->Request->setURL($this->Url);
+        }
+        if ($this->verifyData() && !empty($this->Data)) {
+            $this->Request->setBody($this->Data);
+        }
+        $this->configureAuth();
+    }
+
+    /**
+     * Configures the authentication header on the Request object
+     */
+    protected function configureAuth(){
+        if ($this->authRequired()) {
+            $this->Request->addHeader('OAuth-Token', $this->accessToken);
+        }
+    }
+
+    /**
+     * Configures Data for the EntryPoint. Used mainly as an override function on implemented EntryPoints.
+     * @var $data
      */
     protected function configureData($data){
         if (!empty($this->_REQUIRED_DATA)&&is_array($data)){
-            foreach($this->_REQUIRED_DATA as $property => $value){
-                if (!isset($data[$property])){
-                    $data[$property] = $value;
-                }
-            }
+            $data = $this->configureDefaultData($data);
         }
         $this->setData($data);
+    }
+
+    /**
+     * Configure Defaults on a Data array based on the Required Data property
+     * @param array $data
+     * @return array
+     */
+    protected function configureDefaultData(array $data){
+        foreach($this->_REQUIRED_DATA as $property => $value){
+            if (!isset($data[$property]) && $value!==NULL){
+                $data[$property] = $value;
+            }
+        }
+        return $data;
     }
 
     /**
@@ -279,33 +332,53 @@ abstract class AbstractEntryPoint implements EPInterface {
         $urlVarCount = substr_count($this->_URL,"$");
         $optionCount = 0;
         $optionCount += count($this->Options);
-        if ($urlVarCount!==$optionCount){
-            throw new RequiredOptionsException(get_called_class(),"URL requires $urlVarCount options.");
+        if ($urlVarCount>$optionCount){
+            throw new RequiredOptionsException(get_called_class(),"URL requires $urlVarCount options, only $optionCount provided.");
         }
         return true;
     }
 
     /**
-     * Validate Required Data for the Request
+     * Validate the Data property on the EntryPoint
      * @return bool
      * @throws RequiredDataException
      */
     protected function verifyData(){
         if (isset($this->_DATA_TYPE)||!empty($this->_DATA_TYPE)) {
-            if (gettype($this->Data) !== $this->_DATA_TYPE) {
-                throw new RequiredDataException(get_called_class(),"Valid DataType is {$this->_DATA_TYPE}");
-            }
+            $this->verifyDataType();
         }
         if (!empty($this->_REQUIRED_DATA)){
-            $errors = array();
-            foreach($this->_REQUIRED_DATA as $property => $defaultValue){
-                if (!isset($this->Data[$property])){
-                    $errors[] = $property;
-                }
+            $this->verifyRequiredData();
+        }
+        return true;
+    }
+
+    /**
+     * Validate DataType on the EntryPoint object
+     * @return bool
+     * @throws RequiredDataException
+     */
+    protected function verifyDataType(){
+        if (gettype($this->Data) !== $this->_DATA_TYPE) {
+            throw new RequiredDataException(get_called_class(),"Valid DataType is {$this->_DATA_TYPE}");
+        }
+        return true;
+    }
+
+    /**
+     * Validate Required Data for the EntryPoint
+     * @return bool
+     * @throws RequiredDataException
+     */
+    protected function verifyRequiredData(){
+        $errors = array();
+        foreach($this->_REQUIRED_DATA as $property => $defaultValue){
+            if (!isset($this->Data[$property])){
+                $errors[] = $property;
             }
-            if (count($errors)>0){
-                throw new RequiredDataException(get_called_class(),"Missing data for $errors");
-            }
+        }
+        if (count($errors)>0){
+            throw new RequiredDataException(get_called_class(),"Missing data for ".implode(",",$errors));
         }
         return true;
     }
@@ -315,7 +388,7 @@ abstract class AbstractEntryPoint implements EPInterface {
      * @return bool
      */
     protected function requiresOptions(){
-        return strpos($this->_URL,"$") !== FALSE?TRUE:FALSE;
+        return strpos($this->_URL,"$") === FALSE?FALSE:TRUE;
     }
 
 }

@@ -40,7 +40,7 @@ class Bulk extends AbstractPostEntryPoint {
                 $requestData['requests'][$counter] = $this->bulkRequest;
                 $requestData['requests'][$counter]['method'] = $EntryPoint->getRequest()->getType();
                 if ($requestData['requests'][$counter]['method'] == "POST" || $requestData['requests'][$counter]['method'] == "PUT") {
-                    $requestData['requests'][$counter]['data'] = $EntryPoint->getRequest()->getBody();
+                    $requestData['requests'][$counter]['data'] = json_encode($EntryPoint->getData());
                 } else {
                     unset($requestData['requests'][$counter]['data']);
                 }
@@ -50,7 +50,6 @@ class Bulk extends AbstractPostEntryPoint {
                 $counter++;
             }
         }
-        print_r($requestData);
         $data = $requestData;
         parent::configureData($data);
     }

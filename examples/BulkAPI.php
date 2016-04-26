@@ -4,7 +4,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 try{
-    $SugarAPI = new \SugarAPI\SDK\SugarAPI('instances.this/Pro/7700/',array('username' => 'admin','password'=>'asdf'));
+    $SugarAPI = new \SugarAPI\SDK\SugarAPI('instances.this/Ent/7700/',array('username' => 'admin','password'=>'asdf'));
     $SugarAPI->login();
 
     $Accounts = $SugarAPI->filterRecords('Accounts')->setData(array('max_num'=> 5));

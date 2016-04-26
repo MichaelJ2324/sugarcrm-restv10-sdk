@@ -28,13 +28,13 @@ abstract class AbstractClient implements ClientInterface {
      * The configured server domain name/url on the SDK Client
      * @var string
      */
-    protected $server;
+    protected $server = '';
 
     /**
      * The API Url configured on the SDK Client
      * @var string
      */
-    protected $apiURL;
+    protected $apiURL = '';
 
     /**
      * The full token object returned by the Login method
@@ -46,7 +46,7 @@ abstract class AbstractClient implements ClientInterface {
      * Array of OAuth Creds to be used by SDK Client
      * @var array
      */
-    protected $credentials;
+    protected $credentials = array();
 
     /**
      * Token expiration time

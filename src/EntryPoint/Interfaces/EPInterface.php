@@ -10,7 +10,7 @@ interface EPInterface {
     /**
      * Set the URL options on the EntryPoint, such as Record ID
      * @param array
-     * @return \SugarAPI\SDK\EntryPoint\Interfaces\EPInterface
+     * @return self
      */
     public function setOptions(array $options);
 
@@ -29,21 +29,21 @@ interface EPInterface {
     /**
      * Set the Request Object used by the EntryPoint
      * @param RequestInterface $Request
-     * @return mixed
+     * @return self
      */
     public function setRequest(RequestInterface $Request);
 
     /**
      * Set the Response Object used by the EntryPoint
      * @param ResponseInterface $Response
-     * @return mixed
+     * @return self
      */
     public function setResponse(ResponseInterface $Response);
 
     /**
      * Configure OAuth Token on Header
      * @param string
-     * @return \SugarAPI\SDK\EntryPoint\Interfaces\EPInterface
+     * @return self
      */
     public function setAuth($accessToken);
 
@@ -54,17 +54,17 @@ interface EPInterface {
     public function authRequired();
 
     /**
-     *
-     * @param null $data
-     * @return mixed
+     * Execute the EntryPoint Object
+     * @return self
      */
-    public function execute($data = null);
+    public function execute();
+
 
     /**
-     * Get the module that is set on the EntryPoint
-     * @return string
+     * Get the options configured on the EntryPoint
+     * @return array
      */
-    public function getModule();
+    public function getOptions();
 
     /**
      * Get the full URL being used by the EntryPoint
@@ -80,13 +80,13 @@ interface EPInterface {
 
     /**
      * Get the Response from the EntryPoint request
-     * @return \SugarAPI\SDK\Response\Abstracts\AbstractResponse
+     * @return ResponseInterface
      */
     public function getResponse();
 
     /**
      * Get the Request Object being used by the EntryPoint
-     * @return \SugarAPI\SDK\Request\Abstracts\AbstractRequest
+     * @return RequestInterface
      */
     public function getRequest();
 

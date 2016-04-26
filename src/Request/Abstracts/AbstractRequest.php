@@ -88,6 +88,15 @@ abstract class AbstractRequest implements RequestInterface {
     }
 
     /**
+     * Always make sure to destroy Curl Resource
+     */
+    public function __destruct() {
+        if ($this->status!==self::STATUS_CLOSED){
+            curl_close($this->CurlRequest);
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function setURL($url){

@@ -4,10 +4,11 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 try{
-    $SugarAPI = new \SugarAPI\SDK\SugarAPI('instances.this/Pro/7700/',array('username' => 'admin','password'=>'asdf'));
+    $SugarAPI = new \SugarAPI\SDK\SugarAPI('instances.this/Ent/7700/',array('username' => 'admin','password'=>'asdf'));
     $SugarAPI->login();
     $EP = $SugarAPI->filterRecords('Accounts');
     $response = $EP->execute()->getResponse();
+    print_r($EP->getRequest());
     if ($response->getStatus()=='200'){
         $recordList = $response->getBody(false);
         $max=count($recordList->records);
