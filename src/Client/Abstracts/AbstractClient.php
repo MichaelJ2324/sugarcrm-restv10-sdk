@@ -256,7 +256,7 @@ abstract class AbstractClient implements ClientInterface {
      * @inheritdoc
      */
     public static function getStoredToken($client_id) {
-        return static::$_STORED_TOKENS[$client_id];
+        return (isset(static::$_STORED_TOKENS[$client_id])?static::$_STORED_TOKENS[$client_id]:null);
     }
 
     /**
