@@ -17,8 +17,8 @@ class JSON extends AbstractResponse {
     /**
      * @inheritdoc
      */
-    public function getBody($asArray = true) {
-        return json_decode($this->body,$asArray);
+    public function getBody($asArray = true){
+        return json_decode($this->body, $asArray);
     }
 
 }

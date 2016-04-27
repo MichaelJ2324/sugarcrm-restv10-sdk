@@ -18,10 +18,10 @@ class File extends AbstractResponse {
      */
     protected $destinationPath;
 
-    public function __construct($curlResponse, $curlRequest,$destination = null) {
+    public function __construct($curlResponse, $curlRequest, $destination = null){
         parent::__construct($curlResponse, $curlRequest);
         $this->extractFileName();
-        if (!empty($destination)) {
+        if (!empty($destination)){
             $this->setupDestination($destination);
             $this->writeFile();
         }
@@ -31,11 +31,11 @@ class File extends AbstractResponse {
      * Configure the Destination path to store the File response
      * @param null $destination
      */
-    protected function setupDestination($destination = null){
+    protected function setupDestination($destination = NULL){
         if (empty($destination)){
             $destination = sys_get_temp_dir().'/SugarAPI';
             if (!file_exists($destination)){
-                mkdir($destination,0777);
+                mkdir($destination, 0777);
             }
         }
         $this->destinationPath = $destination;
@@ -45,10 +45,10 @@ class File extends AbstractResponse {
      * Extract the filename from the Headers, and store it in filename property
      */
     protected function extractFileName(){
-        foreach (explode("\r\n",$this->headers) as $header)
+        foreach (explode("\r\n", $this->headers) as $header)
         {
-            if (strpos($header,'filename')!==FALSE){
-                $this->fileName = substr($header,(strpos($header,"\"")+1),-1);
+            if (strpos($header, 'filename')!==FALSE){
+                $this->fileName = substr($header, (strpos($header, "\"")+1), -1);
             }
         }
     }
@@ -73,9 +73,8 @@ class File extends AbstractResponse {
             fclose($fileHandle);
             return $file;
         }else{
-            return false;
+            return FALSE;
         }
-
     }
 
     /**
@@ -83,7 +82,7 @@ class File extends AbstractResponse {
      * @return string
      */
     public function file(){
-        return rtrim($this->destinationPath,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$this->fileName;
+        return rtrim($this->destinationPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$this->fileName;
     }
 
 }

@@ -20,7 +20,7 @@ class Bulk extends AbstractPostEntryPoint {
      * @inheritdoc
      */
     protected $_REQUIRED_DATA = array(
-        'requests' => null
+        'requests' => NULL
     );
 
     private $bulkRequest = array(

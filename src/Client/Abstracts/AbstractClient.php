@@ -72,6 +72,7 @@ abstract class AbstractClient implements ClientInterface {
 
     /**
      * @inheritdoc
+     * @param string $server
      */
     public function setServer($server) {
         $this->server = $server;
@@ -194,7 +195,7 @@ abstract class AbstractClient implements ClientInterface {
         $EP = new OAuth2Token($this->apiURL);
         $response = $EP->execute($this->credentials)->getResponse();
         if ($response->getStatus()=='200'){
-            $this->setToken($response->getBody(false));
+            $this->setToken($response->getBody(FALSE));
             static::storeToken($this->token,$this->credentials['client_id']);
         } else {
             $error = $response->getBody();
@@ -216,7 +217,7 @@ abstract class AbstractClient implements ClientInterface {
         $EP = new RefreshToken($this->apiURL);
         $response = $EP->execute($refreshOptions)->getResponse();
         if ($response->getStatus()=='200'){
-            $this->setToken($response->getBody(false));
+            $this->setToken($response->getBody(FALSE));
             static::storeToken($this->token,$this->credentials['client_id']);
         }else{
             $error = $response->getBody();
@@ -246,17 +247,18 @@ abstract class AbstractClient implements ClientInterface {
 
     /**
      * @inheritdoc
+     * @param \stdClass $token
      */
     public static function storeToken($token, $client_id) {
         static::$_STORED_TOKENS[$client_id] = $token;
-        return true;
+        return TRUE;
     }
 
     /**
      * @inheritdoc
      */
     public static function getStoredToken($client_id) {
-        return (isset(static::$_STORED_TOKENS[$client_id])?static::$_STORED_TOKENS[$client_id]:null);
+        return (isset(static::$_STORED_TOKENS[$client_id])?static::$_STORED_TOKENS[$client_id]:NULL);
     }
 
     /**
@@ -264,7 +266,7 @@ abstract class AbstractClient implements ClientInterface {
      */
     public static function removeStoredToken($client_id) {
         unset(static::$_STORED_TOKENS[$client_id]);
-        return true;
+        return TRUE;
     }
 
 }

@@ -1,7 +1,8 @@
 [![Stories in Ready](https://badge.waffle.io/MichaelJ2324/sugarcrm-restv10-sdk.png?label=ready&title=Ready)](https://waffle.io/MichaelJ2324/sugarcrm-restv10-sdk)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/MichaelJ2324/sugarcrm-restv10-sdk/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/MichaelJ2324/sugarcrm-restv10-sdk/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/MichaelJ2324/sugarcrm-restv10-sdk/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/MichaelJ2324/sugarcrm-restv10-sdk/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/MichaelJ2324/sugarcrm-restv10-sdk/badges/build.png?b=master)](https://scrutinizer-ci.com/g/MichaelJ2324/sugarcrm-restv10-sdk/build-status/master)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.3-8892BF.svg?style=flat-square)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.3-8892BF.svg)](https://php.net/)
 #SugarCRM REST v10 SDK#
 
 ##Overview##

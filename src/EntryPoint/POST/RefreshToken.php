@@ -9,9 +9,9 @@ class RefreshToken extends Oauth2Token {
      */
     protected $_REQUIRED_DATA = array(
         'grant_type' => 'refresh_token',
-        'refresh_token' => null,
-        'client_id' => null,
-        'client_secret' => null
+        'refresh_token' => NULL,
+        'client_id' => NULL,
+        'client_secret' => NULL
     );
 
 }
