@@ -8,7 +8,7 @@ use SugarAPI\SDK\Request\GETFile;
 use SugarAPI\SDK\Request\POST;
 use SugarAPI\SDK\Request\POSTFile;
 use SugarAPI\SDK\Request\PUT;
-use SugarAPI\SDK\Tests\Stubs\EntryPointStub;
+use SugarAPI\SDK\Tests\Stubs\EntryPoint\EntryPointStub;
 
 /**
  * Class AbstractEntryPointTest

@@ -1,10 +1,10 @@
 <?php
 
-namespace SugarAPI\SDK\Tests\Stubs;
+namespace SugarAPI\SDK\Tests\Stubs\EntryPoint;
 
-use SugarAPI\SDK\EntryPoint\Abstracts\POST\AbstractPostEntryPoint;
+use SugarAPI\SDK\EntryPoint\Abstracts\PUT\AbstractPutEntryPoint;
 
-class PostEntryPointStub extends AbstractPostEntryPoint {
+class PutEntryPointStub extends AbstractPutEntryPoint {
 
     protected $_URL = '$test';
 

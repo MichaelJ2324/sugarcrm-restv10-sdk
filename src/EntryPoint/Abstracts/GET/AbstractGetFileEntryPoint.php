@@ -35,4 +35,12 @@ abstract class AbstractGetFileEntryPoint extends AbstractEntryPoint {
         return $this;
     }
 
+    /**
+     * Get the download directory for the File the EntryPoint is retrieving
+     * @return string
+     */
+    public function getDownloadDir(){
+        return $this->downloadDir;
+    }
+
 }

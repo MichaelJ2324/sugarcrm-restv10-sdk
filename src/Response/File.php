@@ -63,11 +63,19 @@ class File extends AbstractResponse {
 
     /**
      * Write the downloaded file
+     * @return string|boolean - False if not written
      */
-    protected function writeFile(){
-        $fileHandle = fopen($this->file(),'w+');
-        fwrite($fileHandle,$this->body);
-        fclose($fileHandle);
+    public function writeFile(){
+        if (!empty($this->fileName)){
+            $file = $this->file();
+            $fileHandle = fopen($file,'w+');
+            fwrite($fileHandle,$this->body);
+            fclose($fileHandle);
+            return $file;
+        }else{
+            return false;
+        }
+
     }
 
     /**

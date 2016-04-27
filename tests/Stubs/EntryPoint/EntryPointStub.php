@@ -1,10 +1,11 @@
 <?php
 
-namespace SugarAPI\SDK\Tests\Stubs;
+namespace SugarAPI\SDK\Tests\Stubs\EntryPoint;
 
-use SugarAPI\SDK\EntryPoint\Abstracts\GET\AbstractGetEntryPoint;
 
-class GetEntryPointStub extends AbstractGetEntryPoint {
+use SugarAPI\SDK\EntryPoint\Abstracts\AbstractEntryPoint;
+
+class EntryPointStub extends AbstractEntryPoint {
 
     protected $_URL = '$test';
 

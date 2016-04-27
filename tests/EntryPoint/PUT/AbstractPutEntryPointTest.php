@@ -1,16 +1,16 @@
 <?php
 
-namespace SugarAPI\SDK\Tests\EntryPoint\DELETE;
+namespace SugarAPI\SDK\Tests\EntryPoint\PUT;
 
-use SugarAPI\SDK\Tests\Stubs\EntryPoint\DeleteEntryPointStub;
+use SugarAPI\SDK\Tests\Stubs\EntryPoint\PutEntryPointStub;
 
 /**
  * Class AbstractEntryPointTest
  * @package SugarAPI\SDK\Tests\EntryPoint
- * @coversDefaultClass SugarAPI\SDK\EntryPoint\Abstracts\DELETE\AbstractDeleteEntryPoint
+ * @coversDefaultClass SugarAPI\SDK\EntryPoint\Abstracts\PUT\AbstractPutEntryPoint
  * @group entrypoints
  */
-class AbstractDeleteEntryPointTest extends \PHPUnit_Framework_TestCase {
+class AbstractPutEntryPointTest extends \PHPUnit_Framework_TestCase {
 
     public static function setUpBeforeClass()
     {
@@ -37,32 +37,31 @@ class AbstractDeleteEntryPointTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @return DeleteEntryPointStub $Stub
+     * @return PutEntryPointStub $Stub
      * @covers ::__construct
      * @group abstractEP
      */
     public function testConstructor(){
-        $Stub = new DeleteEntryPointStub($this->url);
-        $this->assertInstanceOf('SugarAPI\\SDK\\Request\\DELETE',$Stub->getRequest());
+        $Stub = new PutEntryPointStub($this->url);
+        $this->assertInstanceOf('SugarAPI\\SDK\\Request\\PUT',$Stub->getRequest());
         $this->assertEquals('http://localhost/rest/v10/$test',$Stub->getUrl());
         $this->assertEquals(array(),$Stub->getOptions());
         $this->assertEmpty($Stub->getData());
         $this->assertEmpty($Stub->getResponse());
 
         unset($Stub);
-        $Stub = new DeleteEntryPointStub($this->url,$this->options);
-        $this->assertNotEmpty($Stub->getRequest());
+        $Stub = new PutEntryPointStub($this->url,$this->options);
+        $this->assertInstanceOf('SugarAPI\\SDK\\Request\\PUT',$Stub->getRequest());
         $this->assertEquals($this->url.'foo',$Stub->getUrl());
         $this->assertEquals($this->options,$Stub->getOptions());
         $this->assertEmpty($Stub->getData());
         $this->assertEmpty($Stub->getResponse());
 
-        unset($Delete);
         return $Stub;
     }
 
     /**
-     * @param DeleteEntryPointStub $Stub
+     * @param PutEntryPointStub $Stub
      * @depends testConstructor
      * @covers ::execute
      * @group abstractEP

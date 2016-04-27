@@ -1,16 +1,16 @@
 <?php
 
-namespace SugarAPI\SDK\Tests\EntryPoint\DELETE;
+namespace SugarAPI\SDK\Tests\EntryPoint\POST;
 
-use SugarAPI\SDK\Tests\Stubs\EntryPoint\DeleteEntryPointStub;
+use SugarAPI\SDK\Tests\Stubs\EntryPoint\PostEntryPointStub;
 
 /**
  * Class AbstractEntryPointTest
  * @package SugarAPI\SDK\Tests\EntryPoint
- * @coversDefaultClass SugarAPI\SDK\EntryPoint\Abstracts\DELETE\AbstractDeleteEntryPoint
+ * @coversDefaultClass SugarAPI\SDK\EntryPoint\Abstracts\POST\AbstractPostEntryPoint
  * @group entrypoints
  */
-class AbstractDeleteEntryPointTest extends \PHPUnit_Framework_TestCase {
+class AbstractPostEntryPointTest extends \PHPUnit_Framework_TestCase {
 
     public static function setUpBeforeClass()
     {
@@ -37,21 +37,21 @@ class AbstractDeleteEntryPointTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @return DeleteEntryPointStub $Stub
+     * @return PostEntryPointStub $Stub
      * @covers ::__construct
      * @group abstractEP
      */
     public function testConstructor(){
-        $Stub = new DeleteEntryPointStub($this->url);
-        $this->assertInstanceOf('SugarAPI\\SDK\\Request\\DELETE',$Stub->getRequest());
+        $Stub = new PostEntryPointStub($this->url);
+        $this->assertInstanceOf('SugarAPI\\SDK\\Request\\POST',$Stub->getRequest());
         $this->assertEquals('http://localhost/rest/v10/$test',$Stub->getUrl());
         $this->assertEquals(array(),$Stub->getOptions());
         $this->assertEmpty($Stub->getData());
         $this->assertEmpty($Stub->getResponse());
 
         unset($Stub);
-        $Stub = new DeleteEntryPointStub($this->url,$this->options);
-        $this->assertNotEmpty($Stub->getRequest());
+        $Stub = new PostEntryPointStub($this->url,$this->options);
+        $this->assertInstanceOf('SugarAPI\\SDK\\Request\\POST',$Stub->getRequest());
         $this->assertEquals($this->url.'foo',$Stub->getUrl());
         $this->assertEquals($this->options,$Stub->getOptions());
         $this->assertEmpty($Stub->getData());
@@ -62,7 +62,7 @@ class AbstractDeleteEntryPointTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @param DeleteEntryPointStub $Stub
+     * @param PostEntryPointStub $Stub
      * @depends testConstructor
      * @covers ::execute
      * @group abstractEP

@@ -1,6 +1,6 @@
 <?php
 
-namespace SugarAPI\SDK\Tests\Stubs;
+namespace SugarAPI\SDK\Tests\Stubs\EntryPoint;
 
 use SugarAPI\SDK\EntryPoint\Abstracts\DELETE\AbstractDeleteEntryPoint;
 
