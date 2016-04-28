@@ -61,9 +61,11 @@ abstract class AbstractClient implements ClientInterface {
     protected $entryPoints = array();
 
     public function __construct($server = '',array $credentials = array()){
+        $server = (empty($server)?$this->server:$server);
         if (!empty($server)) {
             $this->setServer($server);
         }
+        $credentials = (empty($credentials)?$this->credentials:$credentials);
         if (!empty($credentials)){
             $this->setCredentials($credentials);
         }

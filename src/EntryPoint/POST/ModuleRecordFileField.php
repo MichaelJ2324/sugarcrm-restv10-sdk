@@ -32,24 +32,20 @@ class ModuleRecordFileField extends AbstractPostFileEntryPoint {
      * @throws RequiredOptionsException
      */
     protected function configureData($data){
-        if (!empty($this->Options)){
-            $fileField = end($this->Options);
-        }else{
-            throw new RequiredOptionsException(get_called_class());
-        }
-        if (is_string($data) && isset($fileField)){
-            $data = array(
-                $fileField => $data
-            );
+        if (is_string($data)) {
+            if (!empty($this->Options)) {
+                $fileField = end($this->Options);
+                $data = array(
+                    $fileField => $data
+                );
+            } else {
+                throw new RequiredOptionsException(get_called_class(), "Options are required, when passing String for data.");
+            }
         }
         if (is_array($data)){
-            if (isset($fileField)){
-                $data[$fileField] = $this->setFileFieldValue($data[$fileField]);
-            }else{
-                foreach ($this->Data as $key => $value){
-                    if (!array_key_exists($key,$this->_REQUIRED_DATA)){
-                        $data[$key] = $this->setFileFieldValue($value);
-                    }
+            foreach ($data as $key => $value){
+                if (!array_key_exists($key,$this->_REQUIRED_DATA)){
+                    $data[$key] = $this->setFileFieldValue($value);
                 }
             }
         }

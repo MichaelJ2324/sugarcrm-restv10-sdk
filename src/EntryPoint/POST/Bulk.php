@@ -31,26 +31,28 @@ class Bulk extends AbstractPostEntryPoint {
     );
 
     protected function configureData($data) {
-        $requestData = array(
-            'requests' => array()
-        );
-        $counter = 0;
-        foreach($data as $key => $EntryPoint){
-            if (is_object($EntryPoint)) {
-                $requestData['requests'][$counter] = $this->bulkRequest;
-                $requestData['requests'][$counter]['method'] = $EntryPoint->getRequest()->getType();
-                if ($requestData['requests'][$counter]['method'] == "POST" || $requestData['requests'][$counter]['method'] == "PUT") {
-                    $requestData['requests'][$counter]['data'] = json_encode($EntryPoint->getData());
-                } else {
-                    unset($requestData['requests'][$counter]['data']);
-                }
-                $requestData['requests'][$counter]['headers'] = $EntryPoint->getRequest()->getHeaders();
-                $requestData['requests'][$counter]['url'] = "v10/" . str_replace($this->baseUrl, "", $EntryPoint->getUrl());
+        if (!isset($data['requests'])) {
+            $requestData = array(
+                'requests' => array()
+            );
+            $counter = 0;
+            foreach ($data as $key => $EntryPoint) {
+                if (is_object($EntryPoint)) {
+                    $requestData['requests'][$counter] = $this->bulkRequest;
+                    $requestData['requests'][$counter]['method'] = $EntryPoint->getRequest()->getType();
+                    if ($requestData['requests'][$counter]['method'] == "POST" || $requestData['requests'][$counter]['method'] == "PUT") {
+                        $requestData['requests'][$counter]['data'] = json_encode($EntryPoint->getData());
+                    } else {
+                        unset($requestData['requests'][$counter]['data']);
+                    }
+                    $requestData['requests'][$counter]['headers'] = $EntryPoint->getRequest()->getHeaders();
+                    $requestData['requests'][$counter]['url'] = "v10/" . str_replace($this->baseUrl, "", $EntryPoint->getUrl());
 
-                $counter++;
+                    $counter++;
+                }
             }
+            $data = $requestData;
         }
-        $data = $requestData;
         parent::configureData($data);
     }
 }

@@ -8,7 +8,9 @@ use SugarAPI\SDK\Request\GETFile;
 use SugarAPI\SDK\Request\POST;
 use SugarAPI\SDK\Request\POSTFile;
 use SugarAPI\SDK\Request\PUT;
+use SugarAPI\SDK\Response\JSON;
 use SugarAPI\SDK\Tests\Stubs\EntryPoint\EntryPointStub;
+use SugarAPI\SDK\Tests\Stubs\Response\ResponseStub;
 
 /**
  * Class AbstractEntryPointTest
@@ -74,6 +76,7 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
      * @covers ::getOptions
      * @covers ::getUrl
      * @covers ::configureUrl
+     * @covers ::requiresOptions
      * @group abstractEP
      */
     public function testSetOptions($Stub){
@@ -168,11 +171,11 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
      * @covers ::verifyData
      * @covers ::verifyRequiredData
      * @covers ::verifyDataType
-     * @covers ::verifyOptions
      * @covers ::configureData
      * @covers ::configureDefaultData
      * @covers ::configureUrl
      * @covers ::configureAuth
+     * @covers ::getResponse
      * @group abstractEP
      */
     public function testExecute($Stub){
@@ -183,6 +186,36 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
         ),$Stub->getData());
         $this->assertEquals($this->url.'foo?foo=bar&bar=foo',$Stub->getRequest()->getUrl());
         $this->assertEquals(array('OAuth-Token: 1234'),$Stub->getRequest()->getHeaders());
+        return $Stub;
+    }
+
+    /**
+     * @param EntryPointStub $Stub
+     * @return EntryPointStub $Stub
+     * @depends testExecute
+     * @covers ::setResponse
+     * @covers ::getResponse
+     * @group abstractEP
+     */
+    public function testSetResponse($Stub){
+        $Response = new JSON($Stub->getRequest()->getResponse(),$Stub->getRequest()->getCurlObject());
+        $Stub->setResponse($Response);
+        $this->assertEquals($Response,$Stub->getResponse());
+    }
+
+    /**
+     * @covers ::setUrl
+     * @group abstractEP
+     */
+    public function testSetUrl(){
+        $Stub = new EntryPointStub($this->url);
+        $Stub->setUrl($this->url."foo");
+        $this->assertEquals($this->url."foo",$Stub->getUrl());
+        $Stub->setAuth('1234a');
+        $Stub->setRequest(new GET());
+        $Stub->execute($this->data);
+        $this->assertEquals($this->url."foo",$Stub->getUrl());
+        $this->assertEquals($this->url.'foo?foo=bar&bar=foo',$Stub->getRequest()->getURL());
     }
 
     /**
@@ -228,6 +261,17 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
         $Stub->execute();
     }
 
+    /**
+     * @covers ::verifyUrl
+     * @expectedException SugarAPI\SDK\Exception\EntryPoint\InvalidURLException
+     * @expectedExceptionMessageRegExp /Configured URL is/
+     * @group abstractEP
+     */
+    public function testInvalidURL(){
+        $Stub = new EntryPointStub($this->url);
+        $Stub->setRequest(new POST());
+        $Stub->execute($this->data);
+    }
 
 
 }

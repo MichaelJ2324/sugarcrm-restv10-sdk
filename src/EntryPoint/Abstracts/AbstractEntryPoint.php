@@ -220,7 +220,7 @@ abstract class AbstractEntryPoint implements EPInterface {
     public function execute($data = NULL){
         $data =  ($data === NULL?$this->Data:$data);
         $this->configureData($data);
-        if ($this->verifyOptions() && is_object($this->Request)) {
+        if (is_object($this->Request)) {
             $this->configureRequest();
             $this->Request->send();
         }else{
@@ -318,21 +318,6 @@ abstract class AbstractEntryPoint implements EPInterface {
         $UrlArray = explode("?",$this->Url);
         if (strpos($UrlArray[0],"$") !== FALSE){
             throw new InvalidURLException(get_called_class(),"Configured URL is ".$this->Url);
-        }
-        return true;
-    }
-
-    /**
-     * Verify URL variables have been removed, and that valid number of options were passed.
-     * @return bool
-     * @throws RequiredOptionsException
-     */
-    protected function verifyOptions(){
-        $urlVarCount = substr_count($this->_URL,"$");
-        $optionCount = 0;
-        $optionCount += count($this->Options);
-        if ($urlVarCount>$optionCount){
-            throw new RequiredOptionsException(get_called_class(),"URL requires $urlVarCount options, only $optionCount provided.");
         }
         return true;
     }
