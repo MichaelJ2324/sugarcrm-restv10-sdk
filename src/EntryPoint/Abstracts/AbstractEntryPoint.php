@@ -1,4 +1,7 @@
 <?php
+/**
+ * ©[2016] SugarCRM Inc.  Licensed by SugarCRM under the Apache 2.0 license.
+ */
 
 namespace SugarAPI\SDK\EntryPoint\Abstracts;
 
@@ -14,29 +17,6 @@ use SugarAPI\SDK\Request\Interfaces\RequestInterface;
 /**
  * Class AbstractEntryPoint
  * @package SugarAPI\SDK\EntryPoint\Abstracts
- * @method EPInterface ping()
- * @method EPInterface getRecord(string $module = '')
- * @method EPInterface getAttachment(string $module = '',string $record_id = '')
- * @method EPInterface getChangeLog(string $module = '',string $record_id = '')
- * @method EPInterface filterRelated(string $module = '')
- * @method EPInterface getRelated(string $module = '',string $record_id = '',string $relationship = '',string $related_id = '')
- * @method EPInterface me()
- * @method EPInterface search()
- * @method EPInterface oauth2Token()
- * @method EPInterface oauth2Refresh()
- * @method EPInterface createRecord()
- * @method EPInterface filterRecords()
- * @method EPInterface attachFile()
- * @method EPInterface oauth2Logout()
- * @method EPInterface createRelated()
- * @method EPInterface linkRecords()
- * @method EPInterface bulk()
- * @method EPInterface updateRecord()
- * @method EPInterface favorite()
- * @method EPInterface deleteRecord()
- * @method EPInterface unfavorite()
- * @method EPInterface deleteFile()
- * @method EPInterface unlinkRecords()
  */
 abstract class AbstractEntryPoint implements EPInterface {
 

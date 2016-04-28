@@ -1,4 +1,7 @@
 <?php
+/**
+ * ©[2016] SugarCRM Inc.  Licensed by SugarCRM under the Apache 2.0 license.
+ */
 
 namespace SugarAPI\SDK\Client\Abstracts;
 
@@ -95,9 +98,11 @@ abstract class AbstractClient implements ClientInterface {
      */
     public function setCredentials(array $credentials){
         $this->credentials = $credentials;
-        $token = static::getStoredToken($this->credentials['client_id']);
-        if (!empty($token)){
-            $this->setToken($token);
+        if (isset($this->credentials['client_id'])) {
+            $token = static::getStoredToken($this->credentials['client_id']);
+            if (!empty($token)) {
+                $this->setToken($token);
+            }
         }
         return $this;
     }

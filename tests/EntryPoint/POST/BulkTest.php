@@ -1,6 +1,10 @@
 <?php
+/**
+ * ©[2016] SugarCRM Inc.  Licensed by SugarCRM under the Apache 2.0 license.
+ */
 
 namespace SugarAPI\SDK\Tests\EntryPoint\POST;
+
 use SugarAPI\SDK\EntryPoint\GET\ModuleRecord;
 use SugarAPI\SDK\EntryPoint\POST\Bulk;
 use SugarAPI\SDK\EntryPoint\POST\ModuleFilter;

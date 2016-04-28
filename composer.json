@@ -1,11 +1,11 @@
 {
   "name": "michaelj2324/sugarcrm-restv10-sdk",
-  "description": "An SDk for interacting with Sugar's REST v10 API.",
-  "license": "MIT",
+  "description": "An SDK for interacting with Sugar's REST v10 API.",
+  "license": "Apache-2.0",
   "authors": [
     {
       "name": "Mike Russell",
-      "email": "mr@mikejrussell.com",
+      "email": "mrussell@sugarcrm.com",
       "role": "Developer"
     }
   ],

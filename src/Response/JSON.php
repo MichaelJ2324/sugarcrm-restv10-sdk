@@ -1,11 +1,13 @@
 <?php
+/**
+ * ©[2016] SugarCRM Inc.  Licensed by SugarCRM under the Apache 2.0 license.
+ */
 
 namespace SugarAPI\SDK\Response;
 
 use SugarAPI\SDK\Response\Abstracts\AbstractResponse;
 
 class JSON extends AbstractResponse {
-
 
     /**
      * Get JSON Response

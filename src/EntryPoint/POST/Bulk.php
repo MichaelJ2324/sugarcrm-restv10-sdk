@@ -1,4 +1,7 @@
 <?php
+/**
+ * ©[2016] SugarCRM Inc.  Licensed by SugarCRM under the Apache 2.0 license.
+ */
 
 namespace SugarAPI\SDK\EntryPoint\POST;
 
@@ -30,6 +33,11 @@ class Bulk extends AbstractPostEntryPoint {
         'method' => ''
     );
 
+    /**
+     * @inheritdoc
+     * @param $data
+     * If array of EntryPoint Interfaces are passed in, it will cover that to the proper Data array for the Bulk API
+     */
     protected function configureData($data) {
         if (!isset($data['requests'])) {
             $requestData = array(

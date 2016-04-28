@@ -3,7 +3,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/MichaelJ2324/sugarcrm-restv10-sdk/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/MichaelJ2324/sugarcrm-restv10-sdk/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/MichaelJ2324/sugarcrm-restv10-sdk/badges/build.png?b=master)](https://scrutinizer-ci.com/g/MichaelJ2324/sugarcrm-restv10-sdk/build-status/master)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.3-8892BF.svg)](https://php.net/)
-#SugarCRM REST v10 SDK#
+#SugarCRM REST PHP Client#
 
 ##Overview##
 A simple and intuitive Library for accessing a Sugar 7's REST v10 API. Allows for Object Oriented design around accessing data from a SugarCRM system, so you can easily get your integration project underway.
@@ -13,16 +13,12 @@ A simple and intuitive Library for accessing a Sugar 7's REST v10 API. Allows fo
 You can easily add the Library to a project, by adding the Package to your composer.json file.
 <pre>
     "require": {
-        "michaelj2324/sugarcrm-restv10-sdk": '>=0.9'
+        "michaelj2324/sugarcrm-restv10-sdk": '0.9.*'
     },
 </pre>
-Otherwise you can pull down the package using
-<pre>composer require michaelj2324/sugarcrm-restv10-sdk</pre>
 
 ###Code
-Depending on your use, you can configure your Instance and Authentication credentials in the defaults.php file located in src/ directory.
-
-Otherwise, you will need to pass in your Instance and Authentication Credentials like so:
+With the library included in your project, you can instantiate the included SugarAPI object as follows, by passing in your SugarCRM Server and Authentication Credentials like so:
 <pre>
   $instance = 'localhost/sugarcrm/';
   $authOptions = array(
@@ -32,7 +28,7 @@ Otherwise, you will need to pass in your Instance and Authentication Credentials
   $SugarAPI = new \SugarAPI\SDK\SugarAPI($instance,$authOptions);
   $SugarAPI->login();
 </pre>
-Once you have the Object setup, you can call various methods that related to the SugarCRM REST v10 API Endpoints.
+Once you have the Object setup, you can call the various methods that related to the SugarCRM REST v10 API Endpoints.
 See examples directory for a few examples of manipulating data with the SDK, otherwise some brief code snippets below showcase the current available methods for use.
 
 ##Current API Methods
@@ -210,5 +206,17 @@ See examples directory for a few examples of manipulating data with the SDK, oth
      $SugarAPI->login();
      $SugarAPI->ping()->execute();
  </pre>
+
+## Developing the PHP REST Client
+
+#### Requirement:
+You need to have installed: [php 5.3+](https://php.org/)
+
+#### Steps:
+1. With PHP installed, navigate to the repo folder (rest-php-client) via terminal.
+2. Run 'composer install'
+
+### Contributing:
+See [CONTRIBUTING](CONTRIBUTING.md) for how you can contribute changes back into this project.
 
 
