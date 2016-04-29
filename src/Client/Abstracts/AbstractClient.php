@@ -9,10 +9,35 @@ use SugarAPI\SDK\Client\Interfaces\ClientInterface;
 use SugarAPI\SDK\Exception\EntryPoint\EntryPointException;
 use SugarAPI\SDK\Helpers\Helpers;
 use SugarAPI\SDK\EntryPoint\POST\OAuth2Logout;
-use SugarAPI\SDK\EntryPoint\POST\OAuth2Token;
-use SugarAPI\SDK\EntryPoint\POST\RefreshToken;
 use SugarAPI\SDK\Exception\Authentication\AuthenticationException;
 
+/**
+ * The Abstract Client implementation for Sugar
+ * @package SugarAPI\SDK\Client\Abstracts\AbstractClient
+ * @method EPInterface ping()
+ * @method EPInterface getRecord(string $module = '')
+ * @method EPInterface getAttachment(string $module = '',string $record_id = '')
+ * @method EPInterface getChangeLog(string $module = '',string $record_id = '')
+ * @method EPInterface filterRelated(string $module = '')
+ * @method EPInterface getRelated(string $module = '',string $record_id = '',string $relationship = '',string $related_id = '')
+ * @method EPInterface me()
+ * @method EPInterface search()
+ * @method EPInterface oauth2Token()
+ * @method EPInterface oauth2Refresh()
+ * @method EPInterface createRecord()
+ * @method EPInterface filterRecords()
+ * @method EPInterface attachFile()
+ * @method EPInterface oauth2Logout()
+ * @method EPInterface createRelated()
+ * @method EPInterface linkRecords()
+ * @method EPInterface bulk()
+ * @method EPInterface updateRecord()
+ * @method EPInterface favorite()
+ * @method EPInterface deleteRecord()
+ * @method EPInterface unfavorite()
+ * @method EPInterface deleteFile()
+ * @method EPInterface unlinkRecords()
+ */
 abstract class AbstractClient implements ClientInterface {
 
     /**
@@ -154,7 +179,7 @@ abstract class AbstractClient implements ClientInterface {
     /**
      * @param $funcName
      * @param $className
-     * @return bool
+     * @return self
      * @throws EntryPointException
      */
     public function registerEntryPoint($funcName, $className){
@@ -179,10 +204,8 @@ abstract class AbstractClient implements ClientInterface {
             $Class = $this->entryPoints[$name];
             $EntryPoint = new $Class($this->apiURL, $params);
 
-            if ($EntryPoint->authRequired()){
-                if (isset($this->token) && $this->authenticated()) {
-                    $EntryPoint->setAuth($this->getToken()->access_token);
-                }
+            if ($EntryPoint->authRequired() && $this->authenticated()){
+                $EntryPoint->setAuth($this->token->access_token);
             }
             return $EntryPoint;
         }else{
@@ -195,16 +218,18 @@ abstract class AbstractClient implements ClientInterface {
      * @throws AuthenticationException - When Login request fails
      */
     public function login() {
-        $EP = new OAuth2Token($this->apiURL);
-        $response = $EP->execute($this->credentials)->getResponse();
-        if ($response->getStatus()=='200'){
-            $this->setToken($response->getBody(FALSE));
-            static::storeToken($this->token,$this->credentials['client_id']);
-        } else {
-            $error = $response->getBody();
-            throw new AuthenticationException("Login Response [".$error['error']."] ".$error['error_message']);
+        if (!empty($this->credentials)) {
+            $response = $this->oauth2Token()->execute($this->credentials)->getResponse();
+            if ($response->getStatus() == '200') {
+                $this->setToken($response->getBody(FALSE));
+                static::storeToken($this->token, $this->credentials['client_id']);
+                return TRUE;
+            } else {
+                $error = $response->getBody();
+                throw new AuthenticationException("Login Response [" . $error['error'] . "] " . $error['error_message']);
+            }
         }
-        return TRUE;
+        return FALSE;
     }
 
     /**
@@ -220,8 +245,7 @@ abstract class AbstractClient implements ClientInterface {
                 'client_secret' => $this->credentials['client_secret'],
                 'refresh_token' => $this->token->refresh_token
             );
-            $EP = new RefreshToken($this->apiURL);
-            $response = $EP->execute($refreshOptions)->getResponse();
+            $response = $this->oauth2Refresh()->execute($refreshOptions)->getResponse();
             if ($response->getStatus() == '200') {
                 $this->setToken($response->getBody(FALSE));
                 static::storeToken($this->token, $this->credentials['client_id']);
@@ -240,8 +264,7 @@ abstract class AbstractClient implements ClientInterface {
      */
     public function logout(){
         if ($this->authenticated()){
-            $EP = new OAuth2Logout($this->apiURL);
-            $response = $EP->execute()->getResponse();
+            $response = $this->oauth2Logout()->execute()->getResponse();
             if ($response->getStatus()=='200'){
                 unset($this->token);
                 static::removeStoredToken($this->credentials['client_id']);

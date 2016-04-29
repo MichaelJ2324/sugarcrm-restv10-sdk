@@ -248,6 +248,10 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase {
      * @return ClientStub
      */
     public function testLoginException(){
+        $Stub = new ClientStub($this->server);
+        $this->assertEquals(FALSE,$Stub->login());
+        unset($Stub);
+
         $Stub = new ClientStub($this->server,$this->credentials);
         $Stub->login();
         return $Stub;
