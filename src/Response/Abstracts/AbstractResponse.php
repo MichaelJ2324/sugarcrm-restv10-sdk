@@ -10,72 +10,75 @@ use SugarAPI\SDK\Response\Interfaces\ResponseInterface;
 abstract class AbstractResponse implements ResponseInterface {
 
     /**
-     * Full Curl Response
-     * @var
+     * The Curl Request Resource that was used when curl_exec was called
+     * @var cURL resource handle
      */
-    protected $CurlResponse;
+    protected $CurlRequest;
 
     /**
      * Extracted headers from Curl Response
-     * @var
+     * @var string
      */
     protected $headers;
 
     /**
      * Extracted body from Curl Response
-     * @var
+     * @var mixed
      */
     protected $body;
 
     /**
      * The HTTP Status Code of Request
-     * @var
+     * @var string
      */
     protected $status;
 
     /**
      * The last Curl Error that occurred
-     * @var
+     * @var string|boolean - False when no Curl Error = 0
      */
     protected $error;
 
-    public function __construct($curlResponse, $curlRequest){
-        $this->CurlResponse = $curlResponse;
-        if ($this->checkErrors($curlRequest)){
-            $this->extractResponse($curlRequest);
+    /**
+     * The cURL Resource information returned via curl_getinfo
+     * @var array
+     */
+    protected $info;
+
+    public function __construct($curlRequest,$curlResponse = NULL){
+        $this->CurlRequest = $curlRequest;
+        if ($curlResponse!==NULL){
+            $this->setCurlResponse($curlResponse);
         }
-        $this->setStatus($curlRequest);
+    }
+
+    public function setCurlResponse($curlResponse) {
+        $this->extractInfo();
+        if (!$this->getError()){
+            $this->extractResponse($curlResponse);
+        }
     }
 
     /**
-     * Get the Status from the Curl Resource, and set the status
-     * @param $curlRequest - Curl resource
+     * Extract the information from the Curl Request via curl_getinfo
+     * Setup the Status property to be equal to the http_code
      */
-    protected function setStatus($curlRequest){
-        $this->status = curl_getinfo($curlRequest, CURLINFO_HTTP_CODE);
+    protected function extractInfo(){
+        $this->info = curl_getinfo($this->CurlRequest);
+        $this->status = $this->info['http_code'];
+        if (curl_errno($this->CurlRequest)!== CURLE_OK){
+            $this->error = curl_error($this->CurlRequest);
+        }
+        $this->error = FALSE;
     }
 
     /**
      * Seperate the Headers and Body from the CurlResponse, and set the object properties
-     * @param $curlRequest
+     * @param string $curlResponse
      */
-    protected function extractResponse($curlRequest){
-        $header_size = curl_getinfo($curlRequest, CURLINFO_HEADER_SIZE);
-        $this->headers = substr($this->CurlResponse, 0, $header_size);
-        $this->body = substr($this->CurlResponse, $header_size);
-    }
-
-    /**
-     * Check Curl Request for errors
-     * @param $curlRequest
-     * @return bool
-     */
-    protected function checkErrors($curlRequest){
-        if (curl_errno($curlRequest)!==CURLE_OK){
-            $this->error = curl_error($curlRequest);
-            return FALSE;
-        }
-        return TRUE;
+    protected function extractResponse($curlResponse){
+        $this->headers = substr($curlResponse, 0, $this->info['header_size']);
+        $this->body = substr($curlResponse, $this->info['header_size']);
     }
 
     /**
@@ -104,6 +107,13 @@ abstract class AbstractResponse implements ResponseInterface {
      */
     public function getError(){
         return $this->error;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInfo(){
+        return $this->info;
     }
 
 }

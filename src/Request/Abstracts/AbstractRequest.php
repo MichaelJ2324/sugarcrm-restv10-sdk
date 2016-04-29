@@ -187,7 +187,7 @@ abstract class AbstractRequest implements RequestInterface {
     /**
      * @inheritdoc
      */
-    public function getResponse(){
+    public function getCurlResponse(){
         return $this->CurlResponse;
     }
 

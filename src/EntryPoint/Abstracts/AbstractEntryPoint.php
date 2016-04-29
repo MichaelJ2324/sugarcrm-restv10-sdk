@@ -203,6 +203,7 @@ abstract class AbstractEntryPoint implements EPInterface {
         if (is_object($this->Request)) {
             $this->configureRequest();
             $this->Request->send();
+            $this->configureResponse();
         }else{
             throw new InvalidRequestException(get_called_class(),"Request property not configured");
         }
@@ -229,6 +230,17 @@ abstract class AbstractEntryPoint implements EPInterface {
             $this->Request->setBody($this->Data);
         }
         $this->configureAuth();
+    }
+
+    /**
+     * Verifies URL and Data are setup, then sets them on the Request Object
+     * @throws InvalidURLException
+     * @throws RequiredDataException
+     */
+    protected function configureResponse(){
+        if (is_object($this->Response)){
+            $this->Response->setCurlResponse($this->Request->getCurlResponse());
+        }
     }
 
     /**

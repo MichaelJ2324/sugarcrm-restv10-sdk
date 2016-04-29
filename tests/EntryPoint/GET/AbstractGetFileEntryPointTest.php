@@ -50,7 +50,7 @@ class AbstractGetFileEntryPointTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('http://localhost/rest/v10/$test',$Stub->getUrl());
         $this->assertEquals(array(),$Stub->getOptions());
         $this->assertEmpty($Stub->getData());
-        $this->assertEmpty($Stub->getResponse());
+        $this->assertInstanceOf('SugarAPI\\SDK\\Response\\File',$Stub->getResponse());
 
         unset($Stub);
         $Stub = new GetFileEntryPointStub($this->url,$this->options);
@@ -58,7 +58,7 @@ class AbstractGetFileEntryPointTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->url.'foo',$Stub->getUrl());
         $this->assertEquals($this->options,$Stub->getOptions());
         $this->assertEmpty($Stub->getData());
-        $this->assertEmpty($Stub->getResponse());
+        $this->assertInstanceOf('SugarAPI\\SDK\\Response\\File',$Stub->getResponse());
 
         unset($Delete);
         return $Stub;
@@ -69,7 +69,7 @@ class AbstractGetFileEntryPointTest extends \PHPUnit_Framework_TestCase {
      * @depends testConstructor
      * @covers ::downloadTo
      * @covers ::getDownloadDir
-     * @covers ::execute
+     * @covers ::configureResponse
      * @group abstractEP
      */
     public function testExecute($Stub){
@@ -77,6 +77,7 @@ class AbstractGetFileEntryPointTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(__DIR__,$Stub->getDownloadDir());
         $Stub->execute($this->data);
         $this->assertInstanceOf('SugarAPI\\SDK\\Response\\File',$Stub->getResponse());
+        $this->assertEquals(rtrim(__DIR__,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR,$Stub->getResponse()->file());
     }
 
 }

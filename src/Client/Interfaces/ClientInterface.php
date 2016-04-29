@@ -39,18 +39,21 @@ interface ClientInterface {
     /**
      * Login to the configured SugarCRM server
      * @throws AuthenticationException
+     * @return boolean
      */
     public function login();
 
     /**
      * Logout of the configured SugarCRM server
      * @throws AuthenticationException
+     * @return boolean
      */
     public function logout();
 
     /**
      * Refresh the authentication token on the configured SugarCRM server
      * @throws AuthenticationException
+     * @return boolean
      */
     public function refreshToken();
 

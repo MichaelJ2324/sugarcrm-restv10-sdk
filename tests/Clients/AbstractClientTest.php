@@ -62,9 +62,9 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase {
      */
     public function testConstructor(){
         $Stub = new ClientStub();
-        $this->assertEmpty($Stub->getServer());
+        $this->assertEquals('',$Stub->getServer());
         $this->assertEquals(array(),$Stub->getCredentials());
-        $this->assertEmpty($Stub->getAPIUrl());
+        $this->assertEquals('http:/rest/v10/',$Stub->getAPIUrl());
         $this->assertEmpty($Stub->getToken());
         $this->assertEquals(false,$Stub->authenticated());
         $this->assertAttributeNotEmpty('entryPoints',$Stub);
@@ -240,6 +240,50 @@ class AbstractClientTest extends \PHPUnit_Framework_TestCase {
         return $Stub;
     }
 
+    /**
+     * @covers ::login
+     * @expectedException SugarAPI\SDK\Exception\Authentication\AuthenticationException
+     * @expectedExceptionMessageRegExp /Login Response/
+     * @group abstractClients
+     * @return ClientStub
+     */
+    public function testLoginException(){
+        $Stub = new ClientStub($this->server,$this->credentials);
+        $Stub->login();
+        return $Stub;
+    }
+
+    /**
+     * @depends testLoginException
+     * @covers ::refreshToken
+     * @expectedException SugarAPI\SDK\Exception\Authentication\AuthenticationException
+     * @expectedExceptionMessageRegExp /Refresh Response/
+     * @group abstractClients
+     * @return ClientStub
+     */
+    public function testRefreshException(){
+        $Stub = new ClientStub($this->server,$this->credentials);
+        $this->assertEquals(FALSE,$Stub->refreshToken());
+        $Stub->setToken(static::$token);
+        $Stub->refreshToken();
+        return $Stub;
+    }
+
+    /**
+     * @depends testRefreshException
+     * @covers ::logout
+     * @expectedException SugarAPI\SDK\Exception\Authentication\AuthenticationException
+     * @expectedExceptionMessageRegExp /Logout Response/
+     * @group abstractClients
+     * @return ClientStub
+     */
+    public function testLogoutException(){
+        $Stub = new ClientStub($this->server,$this->credentials);
+        $this->assertEquals(FALSE,$Stub->logout());
+        $Stub->setToken(static::$token);
+        $Stub->logout();
+        return $Stub;
+    }
 
 
 }

@@ -19,13 +19,13 @@ abstract class AbstractGetFileEntryPoint extends AbstractEntryPoint {
 
     public function __construct($url, array $options = array()){
         $this->setRequest(new GETFile());
+        $this->setResponse(new FileResponse($this->Request->getCurlObject()));
         parent::__construct($url, $options);
     }
 
-    public function execute($data = null){
-        parent::execute($data);
-        $this->setResponse(new FileResponse($this->Request->getResponse(), $this->Request->getCurlObject(), $this->downloadDir));
-        return $this;
+    public function configureResponse(){
+        $this->Response->setDestinationPath($this->downloadDir);
+        parent::configureResponse();
     }
 
     /**

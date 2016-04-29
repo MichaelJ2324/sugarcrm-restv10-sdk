@@ -65,13 +65,9 @@ abstract class AbstractClient implements ClientInterface {
 
     public function __construct($server = '',array $credentials = array()){
         $server = (empty($server)?$this->server:$server);
-        if (!empty($server)) {
-            $this->setServer($server);
-        }
+        $this->setServer($server);
         $credentials = (empty($credentials)?$this->credentials:$credentials);
-        if (!empty($credentials)){
-            $this->setCredentials($credentials);
-        }
+        $this->setCredentials($credentials);
         $this->registerSDKEntryPoints();
     }
 
@@ -208,7 +204,7 @@ abstract class AbstractClient implements ClientInterface {
             $error = $response->getBody();
             throw new AuthenticationException("Login Response [".$error['error']."] ".$error['error_message']);
         }
-        return $this;
+        return TRUE;
     }
 
     /**
@@ -216,21 +212,26 @@ abstract class AbstractClient implements ClientInterface {
      * @throws AuthenticationException - When Refresh Request fails
      */
     public function refreshToken(){
-        $refreshOptions = array(
-            'client_id' => $this->credentials->client_id,
-            'client_secret' => $this->credentials->client_secret,
-            'refresh_token' => $this->credentials->refresh_token
-        );
-        $EP = new RefreshToken($this->apiURL);
-        $response = $EP->execute($refreshOptions)->getResponse();
-        if ($response->getStatus()=='200'){
-            $this->setToken($response->getBody(FALSE));
-            static::storeToken($this->token,$this->credentials['client_id']);
-        }else{
-            $error = $response->getBody();
-            throw new AuthenticationException("Refresh Response [".$error['error']."] ".$error['error_message']);
+        if (isset($this->credentials['client_id'])&&
+            isset($this->credentials['client_secret'])&&
+            isset($this->token)) {
+            $refreshOptions = array(
+                'client_id' => $this->credentials['client_id'],
+                'client_secret' => $this->credentials['client_secret'],
+                'refresh_token' => $this->token->refresh_token
+            );
+            $EP = new RefreshToken($this->apiURL);
+            $response = $EP->execute($refreshOptions)->getResponse();
+            if ($response->getStatus() == '200') {
+                $this->setToken($response->getBody(FALSE));
+                static::storeToken($this->token, $this->credentials['client_id']);
+                return TRUE;
+            } else {
+                $error = $response->getBody();
+                throw new AuthenticationException("Refresh Response [" . $error['error'] . "] " . $error['error_message']);
+            }
         }
-        return $this;
+        return FALSE;
     }
 
     /**
@@ -244,12 +245,13 @@ abstract class AbstractClient implements ClientInterface {
             if ($response->getStatus()=='200'){
                 unset($this->token);
                 static::removeStoredToken($this->credentials['client_id']);
+                return TRUE;
             }else{
                 $error = $response->getBody();
                 throw new AuthenticationException("Logout Response [".$error['error']."] ".$error['message']);
             }
         }
-        return $this;
+        return FALSE;
     }
 
     /**

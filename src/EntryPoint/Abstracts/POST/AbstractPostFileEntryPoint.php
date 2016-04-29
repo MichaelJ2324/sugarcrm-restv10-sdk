@@ -13,13 +13,8 @@ abstract class AbstractPostFileEntryPoint extends AbstractEntryPoint {
 
     public function __construct($url, array $options = array()){
         $this->setRequest(new POSTFile());
+        $this->setResponse(new JSON($this->Request->getCurlObject()));
         parent::__construct($url, $options);
-    }
-
-    public function execute($data = null){
-        parent::execute($data);
-        $this->setResponse(new JSON($this->Request->getResponse(), $this->Request->getCurlObject()));
-        return $this;
     }
 
 }

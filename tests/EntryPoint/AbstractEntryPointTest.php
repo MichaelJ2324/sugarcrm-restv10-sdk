@@ -177,11 +177,13 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
      * @covers ::configureData
      * @covers ::configureDefaultData
      * @covers ::configureUrl
+     * @covers ::configureResponse
      * @covers ::configureAuth
-     * @covers ::getResponse
+     * @covers ::setResponse
      * @group abstractEP
      */
     public function testExecute($Stub){
+        $Stub->setResponse(new JSON($Stub->getRequest()->getCurlObject()));
         $Stub->execute();
         $this->assertEquals(array(
                                 'foo' => 'bar',
@@ -189,6 +191,17 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
         ),$Stub->getData());
         $this->assertEquals($this->url.'foo?foo=bar&bar=foo',$Stub->getRequest()->getUrl());
         $this->assertEquals(array('OAuth-Token: 1234'),$Stub->getRequest()->getHeaders());
+        $this->assertNotEmpty($Stub->getResponse()->getInfo());
+        unset($Stub);
+
+        $Stub = new EntryPointStub($this->url,$this->options);
+        $Stub->setRequest(new GET());
+        $Stub->setAuth('1234');
+        $Stub->execute($this->data);
+        $this->assertEquals($this->url.'foo?foo=bar&bar=foo',$Stub->getRequest()->getUrl());
+        $this->assertEquals(array('OAuth-Token: 1234'),$Stub->getRequest()->getHeaders());
+        $this->assertEmpty($Stub->getResponse());
+
         return $Stub;
     }
 
@@ -200,10 +213,11 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
      * @covers ::getResponse
      * @group abstractEP
      */
-    public function testSetResponse($Stub){
-        $Response = new JSON($Stub->getRequest()->getResponse(),$Stub->getRequest()->getCurlObject());
+    public function testSetResponseAfterExecute($Stub){
+        $Response = new JSON($Stub->getRequest()->getCurlObject(),$Stub->getRequest()->getCurlResponse());
         $Stub->setResponse($Response);
         $this->assertEquals($Response,$Stub->getResponse());
+        $this->assertNotEmpty($Stub->getResponse()->getInfo());
     }
 
     /**

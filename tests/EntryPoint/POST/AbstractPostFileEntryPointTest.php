@@ -49,7 +49,7 @@ class AbstractPostFileEntryPointTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('http://localhost/rest/v10/$test',$Stub->getUrl());
         $this->assertEquals(array(),$Stub->getOptions());
         $this->assertEmpty($Stub->getData());
-        $this->assertEmpty($Stub->getResponse());
+        $this->assertInstanceOf('SugarAPI\\SDK\\Response\\JSON',$Stub->getResponse());
 
         unset($Stub);
         $Stub = new PostFileEntryPointStub($this->url,$this->options);
@@ -57,21 +57,9 @@ class AbstractPostFileEntryPointTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->url.'foo',$Stub->getUrl());
         $this->assertEquals($this->options,$Stub->getOptions());
         $this->assertEmpty($Stub->getData());
-        $this->assertEmpty($Stub->getResponse());
-
-        unset($Delete);
-        return $Stub;
-    }
-
-    /**
-     * @param PostFileEntryPointStub $Stub
-     * @depends testConstructor
-     * @covers ::execute
-     * @group abstractEP
-     */
-    public function testExecute($Stub){
-        $Stub->execute($this->data);
         $this->assertInstanceOf('SugarAPI\\SDK\\Response\\JSON',$Stub->getResponse());
+
+        return $Stub;
     }
 
 }

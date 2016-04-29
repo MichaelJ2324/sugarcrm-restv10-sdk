@@ -8,6 +8,13 @@ namespace SugarAPI\SDK\Response\Interfaces;
 interface ResponseInterface {
 
     /**
+     * Provide the Raw Curl Response resource from curl_exec
+     * @param mixed $curlResponse
+     * @return self
+     */
+    public function setCurlResponse($curlResponse);
+
+    /**
      * Get the Response HTTP Status Code
      * @return string
      */
@@ -26,9 +33,16 @@ interface ResponseInterface {
     public function getHeaders();
 
     /**
+     * Get the Information about the Curl Request
+     * @return array
+     */
+    public function getInfo();
+
+    /**
      * Get the Request Errors if they occurred
-     * @return string
+     * @return string|boolean
      */
     public function getError();
+
 
 }
