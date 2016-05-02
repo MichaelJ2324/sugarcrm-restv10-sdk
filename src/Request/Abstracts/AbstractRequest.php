@@ -69,9 +69,9 @@ abstract class AbstractRequest implements RequestInterface {
     protected $url = '';
 
     /**
-     * @var null
+     * @var string
      */
-    protected $status = NULL;
+    protected $status = '';
 
     /**
      * The Request Type

@@ -12,7 +12,7 @@ class JSON extends AbstractResponse {
     /**
      * Get JSON Response
      */
-    public function json(){
+    public function getJson(){
         return $this->body;
     }
 

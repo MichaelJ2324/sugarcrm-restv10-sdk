@@ -40,7 +40,7 @@ class JSONTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers ::json
+     * @covers ::getJson
      * @covers ::getBody
      * @group jsonResponse
      */
@@ -51,12 +51,12 @@ class JSONTest extends \PHPUnit_Framework_TestCase {
         $this->assertEmpty($Stub->getError());
         $this->assertEmpty($Stub->getHeaders());
         $this->assertEmpty($Stub->getStatus());
-        $this->assertEmpty($Stub->json());
+        $this->assertEmpty($Stub->getJson());
         unset($Stub);
 
         $Stub = new JSON($this->Curl,$this->CurlResponse);
         $this->assertNotEmpty($Stub->getInfo());
-        $this->assertEquals($this->CurlResponse,$Stub->json());
+        $this->assertEquals($this->CurlResponse,$Stub->getJson());
         $this->assertEquals(FALSE,$Stub->getError());
         $this->assertEmpty($Stub->getHeaders());
         $this->assertEmpty($Stub->getStatus());
