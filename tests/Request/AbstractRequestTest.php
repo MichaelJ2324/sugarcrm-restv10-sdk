@@ -62,7 +62,6 @@ class AbstractRequestTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(TRUE,$Stub->getOptions()[CURLOPT_HEADER]);
         $this->assertEquals(CURL_HTTP_VERSION_1_0,$Stub->getOptions()[CURLOPT_HTTP_VERSION]);
         $this->assertEquals(FALSE,$Stub->getOptions()[CURLOPT_SSL_VERIFYPEER]);
-        $this->assertEquals(TRUE,$Stub->getOptions()[CURLOPT_RETURNTRANSFER]);
         $this->assertEquals(FALSE,$Stub->getOptions()[CURLOPT_FOLLOWLOCATION]);
         unset($Stub);
 
@@ -80,7 +79,6 @@ class AbstractRequestTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(TRUE,$Stub->getOptions()[CURLOPT_HEADER]);
         $this->assertEquals(CURL_HTTP_VERSION_1_0,$Stub->getOptions()[CURLOPT_HTTP_VERSION]);
         $this->assertEquals(FALSE,$Stub->getOptions()[CURLOPT_SSL_VERIFYPEER]);
-        $this->assertEquals(TRUE,$Stub->getOptions()[CURLOPT_RETURNTRANSFER]);
         $this->assertEquals(FALSE,$Stub->getOptions()[CURLOPT_FOLLOWLOCATION]);
 
         return $Stub;
@@ -209,14 +207,15 @@ class AbstractRequestTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(RequestStub::STATUS_INIT,$Stub->getCurlStatus());
         $Stub->send();
         $this->assertEquals(RequestStub::STATUS_SENT,$Stub->getCurlStatus());
-        $this->assertNotEmpty($Stub->getCurlResponse());
+        $this->assertEquals('boolean',gettype($Stub->getCurlResponse()));
+
         $Stub->reset();
         $Stub->setURL($this->url);
         $this->assertEquals(RequestStub::STATUS_INIT,$Stub->getCurlStatus());
         $this->assertNotEquals($CurlObject,$Stub->getCurlObject());
         $Stub->send();
         $this->assertEquals(RequestStub::STATUS_SENT,$Stub->getCurlStatus());
-        $this->assertNotEmpty($Stub->getCurlResponse());
+        $this->assertEquals('boolean',gettype($Stub->getCurlResponse()));
         unset($Stub);
         unset($CurlObject);
 
