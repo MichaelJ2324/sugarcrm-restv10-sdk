@@ -22,16 +22,6 @@ class PUT extends AbstractRequest {
     );
 
     /**
-     * @inheritdoc
-     *
-     * Set the Curl Custom Request Option to PUT
-     */
-    protected function setType(){
-        parent::setType();
-        $this->setOption(CURLOPT_CUSTOMREQUEST, "PUT");
-    }
-
-    /**
      * JSON Encode Body
      * @inheritdoc
      */

@@ -22,16 +22,6 @@ class DELETE extends AbstractRequest {
     );
 
     /**
-     * @inheritdoc
-     *
-     * Set the Curl Custom Request Option to DELETE
-     */
-    protected function setType(){
-        parent::setType();
-        $this->setOption(CURLOPT_CUSTOMREQUEST, "DELETE");
-    }
-
-    /**
      * JSON Encode Body
      * @inheritdoc
      */

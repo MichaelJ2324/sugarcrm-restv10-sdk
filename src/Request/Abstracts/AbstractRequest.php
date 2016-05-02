@@ -26,9 +26,9 @@ abstract class AbstractRequest implements RequestInterface {
     protected static $_DEFAULT_OPTIONS = array(
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
         CURLOPT_HEADER => TRUE,
-        CURLOPT_SSL_VERIFYPEER => 0,
-        CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_FOLLOWLOCATION => 0,
+        CURLOPT_SSL_VERIFYPEER => FALSE,
+        CURLOPT_RETURNTRANSFER => TRUE,
+        CURLOPT_FOLLOWLOCATION => FALSE,
         CURLOPT_USERAGENT => 'SugarAPI-SDK-PHP'
     );
 
@@ -79,15 +79,23 @@ abstract class AbstractRequest implements RequestInterface {
      */
     protected $type;
 
+    /**
+     * The options configured on the Curl Resource object
+     * @var array
+     */
+    protected $options = array();
+
     public function __construct($url = NULL){
         $this->start();
         if (!empty($url)){
             $this->setURL($url);
         }
-        $this->setType();
+        $this->setType(static::$_TYPE);
+        $this->setHeaders(static::$_DEFAULT_HEADERS);
         foreach (static::$_DEFAULT_OPTIONS as $option => $value){
             $this->setOption($option, $value);
         }
+
     }
 
     /**
@@ -130,7 +138,11 @@ abstract class AbstractRequest implements RequestInterface {
     public function setHeaders(array $array = array()){
         if (count($array)>0){
             foreach ($array as $key => $value){
-                $this->addHeader($key, $value);
+                if (is_numeric($key)){
+                    $this->headers[] = $value;
+                }else {
+                    $this->addHeader($key, $value);
+                }
             }
         }
         $this->setOption(CURLOPT_HTTPHEADER, $this->headers);
@@ -172,6 +184,15 @@ abstract class AbstractRequest implements RequestInterface {
      */
     public function setOption($option, $value){
         curl_setopt($this->CurlRequest, $option, $value);
+        $this->options[$option] = $value;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOptions() {
+        return $this->options;
     }
 
     /**
@@ -192,10 +213,27 @@ abstract class AbstractRequest implements RequestInterface {
     }
 
     /**
-     * Set the Type on the Request
+     * @inheritdoc
      */
-    protected function setType(){
-        $this->type = static::$_TYPE;
+    public function setType($type){
+        $this->type = strtoupper($type);
+        $this->configureType();
+        return $this;
+    }
+
+    /**
+     * Configure the Curl Options based on Request Type
+     */
+    protected function configureType(){
+        switch ($this->type) {
+               case 'POST':
+                    $this->setOption(CURLOPT_POST, TRUE);
+                    break;
+               case 'DELETE':
+               case 'PUT':
+                    $this->setOption(CURLOPT_CUSTOMREQUEST, $this->type);
+                    break;
+        }
     }
 
     /**
@@ -209,7 +247,7 @@ abstract class AbstractRequest implements RequestInterface {
      * @inheritdoc
      */
     public function reset(){
-        if (is_object($this->CurlRequest)){
+        if (gettype($this->CurlRequest)=='resource'){
             $this->close();
         }
         $this->start();

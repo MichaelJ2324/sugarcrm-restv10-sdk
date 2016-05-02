@@ -190,7 +190,7 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
                                 'bar' => 'foo'
         ),$Stub->getData());
         $this->assertEquals($this->url.'foo?foo=bar&bar=foo',$Stub->getRequest()->getUrl());
-        $this->assertEquals(array('OAuth-Token: 1234'),$Stub->getRequest()->getHeaders());
+        $this->assertEquals(array('Content-Type: application/json','OAuth-Token: 1234'),$Stub->getRequest()->getHeaders());
         $this->assertNotEmpty($Stub->getResponse()->getInfo());
         unset($Stub);
 
@@ -199,7 +199,7 @@ class AbstractEntryPointTest extends \PHPUnit_Framework_TestCase {
         $Stub->setAuth('1234');
         $Stub->execute($this->data);
         $this->assertEquals($this->url.'foo?foo=bar&bar=foo',$Stub->getRequest()->getUrl());
-        $this->assertEquals(array('OAuth-Token: 1234'),$Stub->getRequest()->getHeaders());
+        $this->assertEquals(array('Content-Type: application/json','OAuth-Token: 1234'),$Stub->getRequest()->getHeaders());
         $this->assertEmpty($Stub->getResponse());
 
         return $Stub;

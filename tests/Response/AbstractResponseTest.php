@@ -7,7 +7,7 @@ namespace SugarAPI\SDK\Tests\Stubs\Response;
 
 /**
  * Class AbstractResponseTest
- * @package SugarAPI\SDK\Tests\Stubs\Response
+ * @package SugarAPI\SDK\Tests\Response\AbstractResponseTest
  * @coversDefaultClass SugarAPI\SDK\Response\Abstracts\AbstractResponse
  * @group responses
  */
@@ -62,6 +62,22 @@ class AbstractResponseTest extends \PHPUnit_Framework_TestCase {
         $this->assertNotEmpty($Stub->getInfo());
         $this->assertEquals($this->CurlResponse,$Stub->getBody());
         $this->assertEquals(FALSE,$Stub->getError());
+        $this->assertEmpty($Stub->getHeaders());
+        $this->assertEmpty($Stub->getStatus());
+    }
+
+    /**
+     * @covers ::extractInfo
+     * @covers ::getError
+     * @group abstractResponse
+     */
+    public function testCurlErrors(){
+        curl_setopt($this->Curl,CURLOPT_URL, 'test.foo.bar');
+        curl_exec($this->Curl);
+        $Stub = new ResponseStub($this->Curl,$this->CurlResponse);
+        $this->assertNotEmpty($Stub->getInfo());
+        $this->assertNotEmpty($Stub->getError());
+        $this->assertEmpty($Stub->getBody());
         $this->assertEmpty($Stub->getHeaders());
         $this->assertEmpty($Stub->getStatus());
     }

@@ -22,16 +22,6 @@ class POST extends AbstractRequest {
     );
 
     /**
-     * @inheritdoc
-     *
-     * Set the Curl POST Option to True
-     */
-    protected function setType(){
-        parent::setType();
-        $this->setOption(CURLOPT_POST, 1);
-    }
-
-    /**
      * JSON Encode Body
      * @inheritdoc
      */

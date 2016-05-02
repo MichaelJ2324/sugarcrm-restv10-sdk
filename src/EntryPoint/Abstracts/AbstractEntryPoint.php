@@ -285,17 +285,9 @@ abstract class AbstractEntryPoint implements EPInterface {
     protected function configureURL(){
         $url = $this->_URL;
         if ($this->requiresOptions()) {
-            $urlParts = explode("/", $this->_URL);
-            $o = 0;
-            foreach ($urlParts as $key => $part) {
-                if (strpos($part, "$") !== FALSE) {
-                    if (isset($this->Options[$o])) {
-                        $urlParts[$key] = $this->Options[$o];
-                        $o++;
-                    }
-                }
+            foreach($this->Options as $key => $option){
+                $url = preg_replace('/(\$.*?[^\/]*)/',$option,$url,1);
             }
-            $url = implode($urlParts,"/");
         }
         $url = $this->baseUrl.$url;
         $this->setUrl($url);
